@@ -6,12 +6,15 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Battleship extends JFrame implements ActionListener{
     static final int SCREENWIDTH = 1000;
     static final int SCREENHEIGHT = 600;
+    static final int ROWS = 10;
+    static final int COLS = 10;
 
     public Battleship(){
         setTitle("Battleship");
@@ -87,12 +90,28 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame33.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
         horizontalFrame33.setMaximumSize(new Dimension((SCREENWIDTH-HORIZONTALFRAME32WIDTH)/2, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
 
+        JPanel userGridPanel = new JPanel();
+        GridLayout userGridLayout = new GridLayout(ROWS+1, COLS+1);
+        userGridPanel.setPreferredSize(new Dimension(200, 200));
+        userGridPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        userGridPanel.setBackground(new Color(200, 200, 200));
+        userGridPanel.setLayout(userGridLayout);
+
+        JPanel computerGridPanel = new JPanel();
+        GridLayout computerGridLayout = new GridLayout(ROWS+1, COLS+1);
+        computerGridPanel.setPreferredSize(new Dimension(200, 200));
+        computerGridPanel.setBorder(BorderFactory.createLineBorder(Color.black, 2));
+        computerGridPanel.setBackground(new Color(200, 200, 200));
+        computerGridPanel.setLayout(computerGridLayout);
+
         Container contentPane = getContentPane(); //main container
         verticalFrame1.add(horizontalFrame11);
         verticalFrame1.add(horizontalFrame12);
+        horizontalFrame12.add(computerGridPanel);
         verticalFrame1.add(horizontalFrame13);
         verticalFrame3.add(horizontalFrame31);
         verticalFrame3.add(horizontalFrame32);
+        horizontalFrame32.add(userGridPanel);
         verticalFrame3.add(horizontalFrame33);
         container.add(verticalFrame1);
         container.add(verticalFrame2);
