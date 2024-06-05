@@ -20,8 +20,20 @@ public class Player extends Captain{
     public int[] target(){
         System.out.println("Where would you like to attack?");
         int[] coords = new int[2];
-        coords[0] = sc.nextInt();
-        coords[1] = sc.nextInt();
+        String result1 = sc.next();
+        String result2 = sc.next();
+        try{
+            coords[0] = Integer.parseInt(result1) - 1;
+        }catch(NumberFormatException e){
+            coords[0] = result1.charAt(0) - 65;
+        }
+
+        try{
+            coords[1] = Integer.parseInt(result2) - 1;
+        }catch(NumberFormatException e){
+            coords[1] = result2.charAt(0) - 65;
+        }
+
 
         return coords;
     }

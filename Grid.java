@@ -2,6 +2,7 @@ public class Grid {
     private int[][] gridStatus = new int[10][10];
     private String[][] gridState = new String[10][10];
     private Ship[] ship = new Ship[5];
+    private int shipsRemaining = 5;
 
     public Grid(){
         ship[0] = new Ship("destroyer", 2, 'A');
@@ -22,11 +23,6 @@ public class Grid {
         }
     }
 
-    public void placeShips(){
-
-
-    }
-
     public String getGridState(int x, int y){
         return gridState[x][y];
     }
@@ -39,11 +35,20 @@ public class Grid {
         return gridStatus[x][y];
     }
 
+    public int getShipsRemaining(){
+        return shipsRemaining;
+    }
+
     public void attack(int x, int y){
         if(gridState[x][y].equals("N")){
             gridStatus[x][y] = 1;
         }else{
             gridStatus[x][y] = 2;
+            ship[Character.valueOf(gridState[x][y].charAt(0))-65].decrementHealth(1);
+            if(ship[Character.valueOf(gridState[x][y].charAt(0))-65].getHealth() == 0){
+                ship[Character.valueOf(gridState[x][y].charAt(0))-65].sink();
+                shipsRemaining--;
+            }
         }
     }
 
