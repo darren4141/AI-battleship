@@ -186,6 +186,8 @@ public class Battleship extends JFrame implements ActionListener{
                         content = " ";
                     }else if(status == 1){
                         content = "X";
+                    }else if(status == 2){
+                        content = "O";
                     }
                 }
                 JLabel character = new JLabel(content, SwingConstants.CENTER);
@@ -213,6 +215,8 @@ public class Battleship extends JFrame implements ActionListener{
                         content = " ";
                     }else if(status == 1){
                         content = "X";
+                    }else if(status == 2){
+                        content = "O";
                     }
                 }
                 JLabel character = new JLabel(content, SwingConstants.CENTER);

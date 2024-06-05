@@ -40,7 +40,11 @@ public class Grid {
     }
 
     public void attack(int x, int y){
-        gridStatus[x][y] = 1;
+        if(gridState[x][y].equals("N")){
+            gridStatus[x][y] = 1;
+        }else{
+            gridStatus[x][y] = 2;
+        }
     }
 
     public Ship[] getShips(){
@@ -55,6 +59,8 @@ public class Grid {
                     System.out.print(" ");
                 }else if(gridStatus[i][j] == 1){
                     System.out.print("X");
+                }else if(gridStatus[i][j] == 2){
+                    System.out.print("O");
                 }
                 System.out.print("]" );
             }
