@@ -1,12 +1,18 @@
 public class Ship {
     private int length;
     private String name;
+    private char signature;
     private int[] headCoord = new int[2];
     private int[] tailCoord = new int[2];
 
-    public Ship(String name, int length){
-        this.length = length;
+    public Ship(String name, int length, char signature){
         this.name = name;
+        this.length = length;
+        this.signature = signature;
+    }
+
+    public char getSignature(){
+        return signature;
     }
 
     public int getLength(){

@@ -4,11 +4,11 @@ public class Grid {
     private Ship[] ship = new Ship[5];
 
     public Grid(){
-        ship[0] = new Ship("destroyer", 2);
-        ship[1] = new Ship("submarine", 3);
-        ship[2] = new Ship("cruiser", 3);
-        ship[3] = new Ship("battleship", 4);
-        ship[4] = new Ship("carrier", 5);
+        ship[0] = new Ship("destroyer", 2, 'A');
+        ship[1] = new Ship("submarine", 3, 'B');
+        ship[2] = new Ship("cruiser", 3, 'C');
+        ship[3] = new Ship("battleship", 4, 'D');
+        ship[4] = new Ship("carrier", 5, 'E');
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
                 gridStatus[i][j] = 0;
@@ -23,6 +23,7 @@ public class Grid {
     }
 
     public void placeShips(){
+
 
     }
 
@@ -46,7 +47,7 @@ public class Grid {
         return ship;
     }
 
-    public void printGrid(){
+    public void printGridStatus(){
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
                 System.out.print("[" );
@@ -54,6 +55,21 @@ public class Grid {
                     System.out.print(" ");
                 }else if(gridStatus[i][j] == 1){
                     System.out.print("X");
+                }
+                System.out.print("]" );
+            }
+            System.out.println();
+        }
+    }
+
+    public void printGridState(){
+        for(int i = 0; i < 10; i++){
+            for(int j = 0; j < 10; j++){
+                System.out.print("[" );
+                if(gridState[i][j].equals("N")){
+                    System.out.print(" ");
+                }else{
+                    System.out.print(gridState[i][j]);
                 }
                 System.out.print("]" );
             }

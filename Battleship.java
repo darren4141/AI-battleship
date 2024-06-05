@@ -138,11 +138,15 @@ public class Battleship extends JFrame implements ActionListener{
         Scanner sc = new Scanner(System.in);
         boolean gameIsOver = false;
 
+        player2.placeShips();
+
+        player2.getGrid().printGridState();
+
         while(!gameIsOver){
             System.out.println(player1.getName() + "'s GRID");
-            player1.getGrid().printGrid();
+            player1.getGrid().printGridStatus();
             System.out.println(player2.getName() + "'s GRID");
-            player2.getGrid().printGrid();
+            player2.getGrid().printGridStatus();
 
             refreshGrids();
             System.out.println("Grids refreshed");
