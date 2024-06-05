@@ -1,4 +1,22 @@
-public class ExpertAI extends AI{
+public class ExpertAI extends Captain{
+    String name;
+    Grid myGrid = new Grid();
+
+    public ExpertAI(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return name;
+    }
+
     public void placeShips(){}
-    public void attack(){}
+
+    public int[] target(){
+        return null;
+    }
+
+    public Grid getGrid(){
+        return myGrid;
+    }
 }

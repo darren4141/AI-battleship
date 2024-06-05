@@ -26,4 +26,20 @@ public class Ship {
     public int getTailY(){
         return tailCoord[1];
     }
+
+    public void setHeadX(int coord){
+        headCoord[0] = coord;
+    }
+
+    public void setHeadY(int coord){
+        headCoord[1] = coord;
+    }
+
+    public void setTailX(int coord){
+        tailCoord[0] = coord;
+    }
+
+    public void setTailY(int coord){
+        tailCoord[1] = coord;
+    }
 }

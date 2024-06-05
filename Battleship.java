@@ -122,9 +122,9 @@ public class Battleship extends JFrame implements ActionListener{
 
 
     }
-    public static void main(String[]args){
-        Battleship myBattleship = new Battleship();
-    }
+    // public static void main(String[]args){
+    //     Battleship myBattleship = new Battleship();
+    // }
 
 
     public void actionPerformed(ActionEvent event){
