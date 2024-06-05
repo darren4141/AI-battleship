@@ -1,10 +1,12 @@
 public class Ship {
     private int length;
+    private String name;
     private int[] headCoord = new int[2];
     private int[] tailCoord = new int[2];
 
-    public Ship(int length){
+    public Ship(String name, int length){
         this.length = length;
+        this.name = name;
     }
 
     public int getLength(){
