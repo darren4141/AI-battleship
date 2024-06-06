@@ -260,6 +260,115 @@ public class ExpertAI extends Captain{
             return false;
         }
     }    
+    /**depending on which of the three cases, the AI picks a target
+	 * 
+	 * @param guesses
+	 * @param heatMap
+	 * @param hit
+	 * @return
+	 */
+	public static int[] strike(int[][]guesses,int [][]heatMap, boolean hit) {
+		int[]target=new int[2];
+		if(hit==false) {//if there is a not hit then heatMap
+			//do the heatMap code
+		}
+		else if(hit){
+			int[] coord=getHit(guesses);
+			if(adjacentHit(guesses,coord)){//ADD "AND SAME SHIP" <=========
+				//strike the same direction
+			}
+			else{
+				target=strikeAround(guesses,coord);//this gets the coordinates of the target
+			}
+		}
+		return target;
+	}
+
+	}
+	
+	/**checks if there is a hit in the grid
+	 * 
+	 * @param grid
+	 * @return
+	 */
+	public static boolean checkIfHit(int [][]grid) {
+		boolean hit=false;
+		for(int r=0;r<grid.length;r++) {
+			for(int c=0;c<grid.length;c++) {
+				if(grid[r][c]==2) {
+					hit=true;
+				}
+			}
+		}
+		return hit;
+	}
+	/**gets the coordinate of the hit
+	 * 
+	 * @param grid
+	 * @return
+	 */
+	public static int[] getHit(int [][]grid) {
+		int[]coord= new int[2];
+		for(int r=0;r<grid.length;r++) {
+			for(int c=0;c<grid.length;c++) {
+				if(grid[r][c]==2) {
+					coord[1]=r;
+					coord[2]=c;
+				}
+			}
+		}
+		return coord;
+	}
+	
+	/**checks if there is hits adjacent to each other
+	 * 
+	 * @param guesses
+	 * @param coordOfHit
+	 * @return
+	 */
+	public static boolean adjacentHit(int[][]guesses, int[]coordOfHit) {
+		boolean adjacent=false;
+		if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {
+			adjacent=true;
+		}
+		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2) {
+			adjacent=true;
+		}
+		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2) {
+			adjacent=true;
+		}
+		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2) {
+			adjacent=true;
+		}
+		return adjacent;
+	}
+	
+	/**strikes around a hit
+	 * 
+	 * @param guesses
+	 * @param coordOfHit
+	 * @return
+	 */
+	public static int[] strikeAround(int[][]guesses, int[]coordOfHit) {
+		int []target=new int[2];
+		if(guesses[coordOfHit[0]-1][coordOfHit[1]]==0) {
+			target[0]=coordOfHit[0]-1;
+			target[1]=coordOfHit[1];
+		}
+		else if(guesses[coordOfHit[0]][coordOfHit[1]+1]==0) {
+			target[0]=coordOfHit[0];
+			target[1]=coordOfHit[1]+1;
+		}
+		else if(guesses[coordOfHit[0]+1][coordOfHit[1]]==0) {
+			target[0]=coordOfHit[0]+1;
+			target[1]=coordOfHit[1];
+		}
+		else if(guesses[coordOfHit[0]][coordOfHit[1]-1]==0) {
+			target[0]=coordOfHit[0];
+			target[1]=coordOfHit[1]-1;
+		}
+		return target;
+	}
 
     public Grid getGrid(){
         return myGrid;
