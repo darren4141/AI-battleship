@@ -38,6 +38,36 @@ public class Ship {
         return length;
     }
 
+    public int[][] getCoordinates(){
+        int[][] coordinates = new int[length][2];
+        int xDiff = tailCoord[0] - headCoord[0];
+        int yDiff = tailCoord[1] - headCoord[1];
+
+        if(xDiff > 0){
+            for(int i = 0; i < xDiff + 1; i++){
+                coordinates[i][0] = headCoord[0] + i;
+                coordinates[i][1] = headCoord[1];
+            }
+        }else if(xDiff < 0){
+            for(int i = 0; i > xDiff - 1; i--){
+                coordinates[i*-1][0] = headCoord[0] + i;
+                coordinates[i*-1][1] = headCoord[1];
+            }
+        }else if(yDiff > 0){
+            for(int i = 0; i < yDiff + 1; i++){
+                coordinates[i][0] = headCoord[0];
+                coordinates[i][1] = headCoord[1] + i;
+            }
+        }else if(yDiff < 0){
+            for(int i = 0; i > yDiff - 1; i--){
+                coordinates[i*-1][0] = headCoord[0];
+                coordinates[i*-1][1] = headCoord[1] + i;
+            }
+        }
+
+        return coordinates;
+    }
+
     public int getHeadX(){
         return headCoord[0];
     }

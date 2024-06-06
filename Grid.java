@@ -67,13 +67,12 @@ public class Grid {
                 ship[shipNumber].sink();
                 shipsRemaining--;
 
-                int xDiff = ship[shipNumber].getHeadX() - ship[shipNumber].getTailX();
-                int yDiff = ship[shipNumber].getHeadY() - ship[shipNumber].getTailY();
+                int[][] coordinates = ship[shipNumber].getCoordinates();
+                System.out.println("Getting coordinates");
 
-                for(int i = 0; i < xDiff; i++){
-                    for(int j = 0; j < yDiff; j++){
-                        gridStatus[ship[shipNumber].getHeadX() + i][ship[shipNumber].getHeadX() + j] = 3;
-                    }
+                for(int[] i : coordinates){
+                    System.out.println(i[0] + " " + i[1]);
+                    gridStatus[i[0]][i[1]] = 3;
                 }
 
             }

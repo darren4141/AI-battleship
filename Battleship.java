@@ -183,12 +183,15 @@ public class Battleship extends JFrame implements ActionListener{
             }
         }
 
+        refreshGrids();
+        updateLabels();
+        System.out.println("Grids refreshed");
         System.out.println("Game over");
     }
 
 
     public void actionPerformed(ActionEvent event){
-
+        
     }
 
     public static void updateLabels(){
@@ -257,6 +260,8 @@ public class Battleship extends JFrame implements ActionListener{
                         content = "X";
                     }else if(status == 2){
                         content = "O";
+                    }else if(status == 3){
+                        content = "S";
                     }
                 }
                 JLabel character = new JLabel(content, SwingConstants.CENTER);
