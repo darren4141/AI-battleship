@@ -3,6 +3,9 @@ public class Grid {
     private String[][] gridState = new String[10][10];
     private Ship[] ship = new Ship[5];
     private int shipsRemaining = 5;
+    private int shotsRecieved = 0;
+    private int hits = 0;
+    private int misses = 0;
 
     public Grid(){
         ship[0] = new Ship("destroyer", 2, 'A');
@@ -39,13 +42,27 @@ public class Grid {
         return shipsRemaining;
     }
 
+    public int getShotsRecieved(){
+        return shotsRecieved;
+    }
+
+    public int getHits(){
+        return hits;
+    }
+
+    public int getMisses(){
+        return misses;
+    }
+
     public void attack(int x, int y){
         if(gridState[x][y].equals("N")){
             gridStatus[x][y] = 1;
+            misses++;
         }else{
             gridStatus[x][y] = 2;
             int shipNumber = Character.valueOf(gridState[x][y].charAt(0))-65;
             ship[shipNumber].decrementHealth(1);
+            hits++;
             if(ship[shipNumber].getHealth() == 0){
                 ship[shipNumber].sink();
                 shipsRemaining--;
@@ -61,6 +78,8 @@ public class Grid {
 
             }
         }
+
+        shotsRecieved++;
     }
 
     public Ship[] getShips(){

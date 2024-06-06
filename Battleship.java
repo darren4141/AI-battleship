@@ -24,6 +24,16 @@ public class Battleship extends JFrame implements ActionListener{
     static final int COLS = 10;
     static JPanel[] playerGridPanel = new JPanel[2];
     static Captain[] player = new Captain[2];
+
+
+    static JLabel shipsRemainingPlayer1 = new JLabel("Ships Remaining:");
+    static JLabel shotsPlayer1 = new JLabel("Shots Taken: ");
+    static JLabel missesPlayer1 = new JLabel("Misses: ");
+    static JLabel hitsPlayer1 = new JLabel("Hits: ");
+    static JLabel shipsRemainingPlayer2 = new JLabel("Ships Remaining:");
+    static JLabel shotsPlayer2 = new JLabel("Shots Taken: ");
+    static JLabel missesPlayer2 = new JLabel("Misses: ");
+    static JLabel hitsPlayer2 = new JLabel("Hits: ");
     
 
     public Battleship(){
@@ -67,8 +77,11 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame11.setLayout(frame11Layout);
         horizontalFrame11.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
         horizontalFrame11.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
-        JLabel shipsRemainingPlayer1 = new JLabel("Ships Remaining:");
         horizontalFrame11.add(shipsRemainingPlayer1);
+        horizontalFrame11.add(shotsPlayer1);
+        horizontalFrame11.add(missesPlayer1);
+        horizontalFrame11.add(hitsPlayer1);
+
 
         JPanel horizontalFrame12 = new JPanel();
         FlowLayout frame12Layout = new FlowLayout();
@@ -91,8 +104,10 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame31.setLayout(frame31Layout);
         horizontalFrame31.setBorder(BorderFactory.createLineBorder(Color.black)); //for debugging
         horizontalFrame31.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
-        JLabel shipsRemainingPlayer2 = new JLabel("Ships Remaining:");
         horizontalFrame31.add(shipsRemainingPlayer2);
+        horizontalFrame31.add(shotsPlayer2);
+        horizontalFrame31.add(missesPlayer2);
+        horizontalFrame31.add(hitsPlayer2);
         
         JPanel horizontalFrame32 = new JPanel();
         FlowLayout frame32Layout = new FlowLayout();
@@ -154,6 +169,7 @@ public class Battleship extends JFrame implements ActionListener{
             player[1].getGrid().printGridStatus();
 
             refreshGrids();
+            updateLabels();
             System.out.println("Grids refreshed");
 
             int[] hit1 = player[0].target();
@@ -173,6 +189,18 @@ public class Battleship extends JFrame implements ActionListener{
 
     public void actionPerformed(ActionEvent event){
 
+    }
+
+    public static void updateLabels(){
+        shipsRemainingPlayer1.setText("Ships Remaining: " +  player[1].getGrid().getShipsRemaining());
+        shotsPlayer1.setText("Shots Taken: " + player[1].getGrid().getShotsRecieved());
+        hitsPlayer1.setText("Hits: " + player[1].getGrid().getHits());
+        missesPlayer1.setText("Misses: " + player[1].getGrid().getMisses());
+
+        shipsRemainingPlayer2.setText("Ships Remaining: " +  player[0].getGrid().getShipsRemaining());
+        shotsPlayer2.setText("Shots Taken: " + player[0].getGrid().getShotsRecieved());
+        hitsPlayer2.setText("Hits: " + player[0].getGrid().getHits());
+        missesPlayer2.setText("Misses: " + player[0].getGrid().getMisses());
     }
 
     public static void refreshGrids(){

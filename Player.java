@@ -34,7 +34,6 @@ public class Player extends Captain{
             coords[1] = result2.charAt(0) - 65;
         }
 
-
         return coords;
     }
 
