@@ -270,8 +270,14 @@ public class Battleship extends JFrame implements ActionListener{
                         j = 0;
                     }
                     if(player[i].isAI()){
-                        int[] hit = player[i].target(player[j].getGrid());
+                        // int[] hit = player[i].target(player[j].getGrid());
+                        int[] hit = new int[2];
+
+                        hit[0] = (int)(Math.random() * 2);
+                        hit[1] = (int)(Math.random() * 2);
                         player[j].getGrid().attack(hit[0], hit[1]);
+                        // player[j].getGrid().attack((int)(Math.random() * 2), (int)(Math.random() * 2));
+
 
                         String[] options = {"Hit", "Miss", "Sunk"};
                         int choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + hit[0] + ", " + hit[1] + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
@@ -281,12 +287,37 @@ public class Battleship extends JFrame implements ActionListener{
                         }
 
                         if(choice == 0){
-                            System.out.println("choice is 0");
-                            System.out.println(hit[0] + " " + hit[1]);
                             player[j].getGrid().setGridStatus(hit[0], hit[1], 2);
+                            String[] shipNames = new String[5];
+                            Ship[] s = player[j].getGrid().getShips();
+
+                            for(int n = 0; n < 5; n++){
+                                shipNames[n] = s[n].getName();
+                            }
+
+                            int shipChoice = JOptionPane.showOptionDialog(null, "Which ship did " + player[i].getName() + " hit?", "Which ship was hit?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, shipNames, 0);
+
+                            while(shipChoice == -1){
+                                shipChoice = JOptionPane.showOptionDialog(null, "Which ship did " + player[i].getName() + " hit?", "Which ship was hit?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, shipNames, 0);
+                            }
+
+                            s[shipChoice].setCell(hit[0], hit[1]);
+
                         }else if(choice == 1){
 
                         }else if(choice == 2){
+                            String[] shipNames = new String[5];
+                            Ship[] s = player[j].getGrid().getShips();
+
+                            for(int n = 0; n < 5; n++){
+                                shipNames[n] = s[n].getName();
+                            }
+
+                            int shipChoice = JOptionPane.showOptionDialog(null, "Which ship did " + player[i].getName() + " sink?", "Which ship was hit?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, shipNames, 0);
+
+                            while(shipChoice == -1){
+                                shipChoice = JOptionPane.showOptionDialog(null, "Which ship did " + player[i].getName() + " sink?", "Which ship was hit?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, shipNames, 0);
+                            }
 
                         }
                     }else{

@@ -6,12 +6,19 @@ public class Ship {
     private char signature;
     private int[] headCoord = new int[2];
     private int[] tailCoord = new int[2];
+    private int[][] cells;
 
     public Ship(String name, int length, char signature){
         this.name = name;
         this.length = length;
         this.signature = signature;
         health = length;
+        cells = new int[length][2];
+
+        for(int i = 0; i < length; i++){
+            cells[i][0] = -1;
+            cells[i][1] = -1;
+        }
     }
 
     public void sink(){
@@ -20,6 +27,10 @@ public class Ship {
 
     public boolean getAlive(){
         return alive;
+    }
+
+    public String getName(){
+        return name;
     }
 
     public int getHealth(){
@@ -36,6 +47,20 @@ public class Ship {
 
     public int getLength(){
         return length;
+    }
+
+    public void setCell(int x, int y){
+        for(int i[] : cells){
+            if(i[0] == -1 && i[1] == -1){
+                i[0] = x;
+                i[1] = y;
+                break;
+            }
+        }
+    }
+
+    public int[][] getCells(){
+        return cells;
     }
 
     public int[][] getCoordinates(){
