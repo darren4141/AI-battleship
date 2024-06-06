@@ -10,6 +10,10 @@ public class SimpleAI extends Captain{
         return name;
     }
 
+    public boolean isAI(){
+        return true;
+    }
+
     public void placeShips(){
         Ship[] ships = myGrid.getShips();
         for(Ship s : ships){
@@ -70,8 +74,18 @@ public class SimpleAI extends Captain{
 
     public int[] target(){
         int[] coords = new int[2];
-        coords[0] = (int)(Math.random() * 10);
-        coords[1] = (int)(Math.random() * 10);
+
+        boolean isEmpty = false;
+
+        while(!isEmpty){
+            coords[0] = (int)(Math.random() * 10);
+            coords[1] = (int)(Math.random() * 10);
+
+            if(myGrid.getGridStatus(coords[0], coords[1]) == 0){
+                isEmpty = true;
+            }
+        }
+
         return coords;
     }
 

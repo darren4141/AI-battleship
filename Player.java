@@ -17,6 +17,10 @@ public class Player extends Captain{
 
     }
 
+    public boolean isAI(){
+        return false;
+    }
+
     public int[] target(){
         System.out.println("Where would you like to attack?");
         int[] coords = new int[2];

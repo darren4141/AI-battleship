@@ -1,8 +1,10 @@
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
@@ -35,6 +37,10 @@ public class Battleship extends JFrame implements ActionListener{
     static JLabel missesPlayer2 = new JLabel("Misses: ");
     static JLabel hitsPlayer2 = new JLabel("Hits: ");
     
+    static JTextField mainPromptField = new JTextField();
+
+    static int turn = 0;
+
 
     public Battleship(){
         playerGridPanel[0] = new JPanel();
@@ -55,6 +61,12 @@ public class Battleship extends JFrame implements ActionListener{
         verticalFrame2.setMaximumSize(new Dimension(VERTICALFRAME2WIDTH, SCREENHEIGHT)); //set the maximum size
         verticalFrame2.setLayout(verticalFrame2Layout);
         verticalFrame2.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
+        mainPromptField.setSize(50, 100);
+        mainPromptField.setMaximumSize(new Dimension(100, 30));
+        verticalFrame2.add(mainPromptField);
+        JButton fire = new JButton("FIRE!");
+        fire.addActionListener(this);
+        verticalFrame2.add(fire);
 
         JPanel verticalFrame1 = new JPanel();
         BoxLayout verticalFrame1Layout = new BoxLayout(verticalFrame1, BoxLayout.Y_AXIS);
@@ -148,6 +160,10 @@ public class Battleship extends JFrame implements ActionListener{
         container.add(verticalFrame2);
         container.add(verticalFrame3);
         contentPane.add(container);
+
+        container.getRootPane().setDefaultButton(fire);
+
+
         setVisible(true);
         setResizable(true);
 
@@ -162,26 +178,26 @@ public class Battleship extends JFrame implements ActionListener{
 
         player[1].getGrid().printGridState();
 
-        while(!gameIsOver){
-            System.out.println(player[0].getName() + "'s GRID");
-            player[0].getGrid().printGridStatus();
-            System.out.println(player[1].getName() + "'s GRID");
-            player[1].getGrid().printGridStatus();
+        // while(!gameIsOver){
+        //     System.out.println(player[0].getName() + "'s GRID");
+        //     player[0].getGrid().printGridStatus();
+        //     System.out.println(player[1].getName() + "'s GRID");
+        //     player[1].getGrid().printGridStatus();
 
-            refreshGrids();
-            updateLabels();
-            System.out.println("Grids refreshed");
+        //     refreshGrids();
+        //     updateLabels();
+        //     System.out.println("Grids refreshed");
 
-            int[] hit1 = player[0].target();
-            player[1].getGrid().attack(hit1[0], hit1[1]);
+        //     int[] hit1 = player[0].target();
+        //     player[1].getGrid().attack(hit1[0], hit1[1]);
 
-            int[] hit2 = player[1].target();
-            player[0].getGrid().attack(hit2[0], hit2[1]);
+        //     int[] hit2 = player[1].target();
+        //     player[0].getGrid().attack(hit2[0], hit2[1]);
 
-            if(player[0].getGrid().getShipsRemaining() == 0 || player[1].getGrid().getShipsRemaining() == 0){
-                gameIsOver = true;
-            }
-        }
+        //     if(player[0].getGrid().getShipsRemaining() == 0 || player[1].getGrid().getShipsRemaining() == 0){
+        //         gameIsOver = true;
+        //     }
+        // }
 
         refreshGrids();
         updateLabels();
@@ -191,7 +207,90 @@ public class Battleship extends JFrame implements ActionListener{
 
 
     public void actionPerformed(ActionEvent event){
-        
+        String command = event.getActionCommand();
+
+        if(command.equals("FIRE!")){
+            boolean validInput = true;
+
+            String[] coordinates;
+            if(mainPromptField.getText().contains(" ")){
+                coordinates = mainPromptField.getText().split(" ");
+            }else if(mainPromptField.getText().length() == 2){
+                coordinates = new String[2];
+                coordinates[0] = Character.toString(mainPromptField.getText().charAt(0));
+                coordinates[1] = Character.toString(mainPromptField.getText().charAt(1));
+            }else if(mainPromptField.getText().length() == 3){
+                coordinates = new String[2];
+                if(!(mainPromptField.getText().charAt(0) == '1')){
+                    coordinates[0] = Character.toString(mainPromptField.getText().charAt(0));
+                    coordinates[1] = Character.toString(mainPromptField.getText().charAt(1)) + Character.toString(mainPromptField.getText().charAt(2));
+                }else{
+                    if(mainPromptField.getText().charAt(1) == '0'){
+                        coordinates[0] = Character.toString(mainPromptField.getText().charAt(0)) + Character.toString(mainPromptField.getText().charAt(1));
+                        coordinates[1] = Character.toString(mainPromptField.getText().charAt(2));
+                    }else if(mainPromptField.getText().charAt(1) == '1'){
+                        coordinates[0] = Character.toString(mainPromptField.getText().charAt(0));
+                        coordinates[1] = Character.toString(mainPromptField.getText().charAt(1)) + Character.toString(mainPromptField.getText().charAt(2));
+                    }
+                }
+            }else if(mainPromptField.getText().length() == 4){
+                coordinates = new String[2];
+                coordinates[0] = Character.toString(mainPromptField.getText().charAt(0)) + Character.toString(mainPromptField.getText().charAt(1));
+                coordinates[1] = Character.toString(mainPromptField.getText().charAt(2)) + Character.toString(mainPromptField.getText().charAt(3));
+            }else{
+                coordinates = new String[2];
+            }
+            mainPromptField.setText("");
+
+            for(int i = 0; i < 2; i++){
+                int c;
+
+                try{
+                    c = Integer.parseInt(coordinates[i]) - 1;
+                }catch(NumberFormatException e){
+                    c = coordinates[i].toUpperCase().charAt(0) - 65;
+                }
+
+                if(c < 0 || c > 10){
+                    validInput = false;
+                }
+            }
+
+            if(validInput){
+                for(int i = 0; i < 2; i++){
+                    int j;
+                    if(i == 0){
+                        j = 1;
+                    }else{
+                        j = 0;
+                    }
+                    if(player[i].isAI()){
+                        int[] hit = player[i].target();
+                        player[j].getGrid().attack(hit[0], hit[1]);
+                    }else{
+    
+                        int[] hit = new int[2];
+    
+                        try{
+                            hit[0] = Integer.parseInt(coordinates[0]) - 1;
+                        }catch(NumberFormatException e){
+                            hit[0] = coordinates[0].toUpperCase().charAt(0) - 65;
+                        }
+                
+                        try{
+                            hit[1] = Integer.parseInt(coordinates[1]) - 1;
+                        }catch(NumberFormatException e){
+                            hit[1] = coordinates[1].toUpperCase().charAt(0) - 65;
+                        }
+                        player[j].getGrid().attack(hit[0], hit[1]);
+                    }
+                }
+            }
+            refreshGrids();
+            updateLabels();
+
+
+        }
     }
 
     public static void updateLabels(){

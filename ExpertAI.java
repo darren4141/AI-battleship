@@ -19,4 +19,8 @@ public class ExpertAI extends Captain{
     public Grid getGrid(){
         return myGrid;
     }
+
+    public boolean isAI(){
+        return true;
+    }
 }
