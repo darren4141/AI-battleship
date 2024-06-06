@@ -4,7 +4,7 @@ public abstract class Captain {
 
     public abstract String getName();
     public abstract void placeShips();
-    public abstract int[] target();
+    public abstract int[] target(Grid enemyGrid);
     public abstract Grid getGrid();
     public abstract boolean isAI();
     

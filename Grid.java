@@ -38,6 +38,10 @@ public class Grid {
         return gridStatus[x][y];
     }
 
+    public int[][] getEntireGridStatus(){
+        return gridStatus;
+    }
+
     public int getShipsRemaining(){
         return shipsRemaining;
     }

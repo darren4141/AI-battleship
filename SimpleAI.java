@@ -72,7 +72,7 @@ public class SimpleAI extends Captain{
         }
     }
 
-    public int[] target(){
+    public int[] target(Grid enemyGrid){
         int[] coords = new int[2];
 
         boolean isEmpty = false;
@@ -81,7 +81,7 @@ public class SimpleAI extends Captain{
             coords[0] = (int)(Math.random() * 10);
             coords[1] = (int)(Math.random() * 10);
 
-            if(myGrid.getGridStatus(coords[0], coords[1]) == 0){
+            if(enemyGrid.getGridStatus(coords[0], coords[1]) == 0){
                 isEmpty = true;
             }
         }

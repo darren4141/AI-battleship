@@ -21,7 +21,7 @@ public class Player extends Captain{
         return false;
     }
 
-    public int[] target(){
+    public int[] target(Grid enemyGrid){
         System.out.println("Where would you like to attack?");
         int[] coords = new int[2];
         String result1 = sc.next();

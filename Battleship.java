@@ -46,7 +46,7 @@ public class Battleship extends JFrame implements ActionListener{
         playerGridPanel[0] = new JPanel();
         playerGridPanel[1] = new JPanel();
         player[0] = new Player("Jo");
-        player[1] = new SimpleAI("Bot");
+        player[1] = new ExpertAI("Bot");
         setTitle("Battleship");
         setSize(SCREENWIDTH, SCREENHEIGHT);
 
@@ -242,18 +242,22 @@ public class Battleship extends JFrame implements ActionListener{
             }
             mainPromptField.setText("");
 
-            for(int i = 0; i < 2; i++){
-                int c;
+            int[] c = new int[2];
 
+            for(int i = 0; i < 2; i++){
                 try{
-                    c = Integer.parseInt(coordinates[i]) - 1;
+                    c[i] = Integer.parseInt(coordinates[i]) - 1;
                 }catch(NumberFormatException e){
-                    c = coordinates[i].toUpperCase().charAt(0) - 65;
+                    c[i] = coordinates[i].toUpperCase().charAt(0) - 65;
                 }
 
-                if(c < 0 || c > 10){
+                if(c[i] < 0 || c[i] > 10){
                     validInput = false;
                 }
+            }
+
+            if(!(player[1].getGrid().getGridStatus(c[0], c[1]) == 0)){
+                validInput = false;
             }
 
             if(validInput){
@@ -265,7 +269,7 @@ public class Battleship extends JFrame implements ActionListener{
                         j = 0;
                     }
                     if(player[i].isAI()){
-                        int[] hit = player[i].target();
+                        int[] hit = player[i].target(player[j].getGrid());
                         player[j].getGrid().attack(hit[0], hit[1]);
                     }else{
     
@@ -286,6 +290,11 @@ public class Battleship extends JFrame implements ActionListener{
                     }
                 }
             }
+
+            System.out.println(player[0].getName() + "'s GRID");
+            player[0].getGrid().printGridStatus();
+            System.out.println(player[1].getName() + "'s GRID");
+            player[1].getGrid().printGridStatus();
             refreshGrids();
             updateLabels();
 
