@@ -58,6 +58,11 @@ public class SimpleAI extends Captain{
             for(int i = 0; i < s.getLength(); i++){
                 // System.out.println(s.getHeadX() + directionMap[direction][0] * i + " " +  (s.getHeadY() + directionMap[direction][1] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][0] * i, s.getHeadY() + directionMap[direction][1] * i));
                 myGrid.setGridState(s.getHeadX() + directionMap[direction][0] * i, s.getHeadY() + directionMap[direction][1] * i, Character.toString(s.getSignature()));
+
+                if(i == s.getLength()-1){
+                    s.setTailX(s.getHeadX() + directionMap[direction][0] * i);
+                    s.setTailY(s.getHeadY() + directionMap[direction][1] * i);
+                }
             }
 
         }

@@ -44,10 +44,21 @@ public class Grid {
             gridStatus[x][y] = 1;
         }else{
             gridStatus[x][y] = 2;
-            ship[Character.valueOf(gridState[x][y].charAt(0))-65].decrementHealth(1);
-            if(ship[Character.valueOf(gridState[x][y].charAt(0))-65].getHealth() == 0){
-                ship[Character.valueOf(gridState[x][y].charAt(0))-65].sink();
+            int shipNumber = Character.valueOf(gridState[x][y].charAt(0))-65;
+            ship[shipNumber].decrementHealth(1);
+            if(ship[shipNumber].getHealth() == 0){
+                ship[shipNumber].sink();
                 shipsRemaining--;
+
+                int xDiff = ship[shipNumber].getHeadX() - ship[shipNumber].getTailX();
+                int yDiff = ship[shipNumber].getHeadY() - ship[shipNumber].getTailY();
+
+                for(int i = 0; i < xDiff; i++){
+                    for(int j = 0; j < yDiff; j++){
+                        gridStatus[ship[shipNumber].getHeadX() + i][ship[shipNumber].getHeadX() + j] = 3;
+                    }
+                }
+
             }
         }
     }

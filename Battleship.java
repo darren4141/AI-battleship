@@ -35,26 +35,26 @@ public class Battleship extends JFrame implements ActionListener{
         setSize(SCREENWIDTH, SCREENHEIGHT);
 
         JPanel container = new JPanel(); //main panel
-        BoxLayout containerFrame = new BoxLayout(container, BoxLayout.Y_AXIS);
+        BoxLayout containerFrame = new BoxLayout(container, BoxLayout.X_AXIS);
         container.setLayout(containerFrame);
         
-        final int VERTICALFRAME2HEIGHT = 100;
+        final int VERTICALFRAME2WIDTH = 250;
 
         JPanel verticalFrame2 = new JPanel();
-        BoxLayout verticalFrame2Layout = new BoxLayout(verticalFrame2, BoxLayout.X_AXIS);
-        verticalFrame2.setMaximumSize(new Dimension(SCREENWIDTH, VERTICALFRAME2HEIGHT)); //set the maximum size
+        BoxLayout verticalFrame2Layout = new BoxLayout(verticalFrame2, BoxLayout.Y_AXIS);
+        verticalFrame2.setMaximumSize(new Dimension(VERTICALFRAME2WIDTH, SCREENHEIGHT)); //set the maximum size
         verticalFrame2.setLayout(verticalFrame2Layout);
         verticalFrame2.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
 
         JPanel verticalFrame1 = new JPanel();
-        BoxLayout verticalFrame1Layout = new BoxLayout(verticalFrame1, BoxLayout.X_AXIS);
-        verticalFrame1.setMaximumSize(new Dimension(SCREENWIDTH, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2)); //set the maximum size
+        BoxLayout verticalFrame1Layout = new BoxLayout(verticalFrame1, BoxLayout.Y_AXIS);
+        verticalFrame1.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT)); //set the maximum size
         verticalFrame1.setLayout(verticalFrame1Layout);
         verticalFrame1.setBorder(BorderFactory.createLineBorder(Color.BLUE)); //for debugging
 
         JPanel verticalFrame3 = new JPanel();
-        BoxLayout verticalFrame3Layout = new BoxLayout(verticalFrame3, BoxLayout.X_AXIS);
-        verticalFrame3.setMaximumSize(new Dimension(SCREENWIDTH, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2)); //set the maximum size
+        BoxLayout verticalFrame3Layout = new BoxLayout(verticalFrame3, BoxLayout.Y_AXIS);
+        verticalFrame3.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT)); //set the maximum size
         verticalFrame3.setLayout(verticalFrame3Layout);
         verticalFrame3.setBorder(BorderFactory.createLineBorder(Color.BLUE)); //for debugging
 
@@ -66,52 +66,56 @@ public class Battleship extends JFrame implements ActionListener{
         frame11Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame11.setLayout(frame11Layout);
         horizontalFrame11.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
-        horizontalFrame11.setMaximumSize(new Dimension((SCREENWIDTH-HORIZONTALFRAME12WIDTH)/2, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame11.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
+        JLabel shipsRemainingPlayer1 = new JLabel("Ships Remaining:");
+        horizontalFrame11.add(shipsRemainingPlayer1);
 
         JPanel horizontalFrame12 = new JPanel();
         FlowLayout frame12Layout = new FlowLayout();
         frame12Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame12.setLayout(frame12Layout);
         horizontalFrame12.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
-        horizontalFrame12.setMaximumSize(new Dimension(HORIZONTALFRAME12WIDTH, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame12.setMaximumSize(new Dimension(HORIZONTALFRAME12WIDTH, SCREENHEIGHT));
 
         JPanel horizontalFrame13 = new JPanel();
         FlowLayout frame13Layout = new FlowLayout();
         frame13Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame13.setLayout(frame13Layout);
         horizontalFrame13.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
-        horizontalFrame13.setMaximumSize(new Dimension((SCREENWIDTH-HORIZONTALFRAME12WIDTH)/2, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame13.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
 
 
         JPanel horizontalFrame31 = new JPanel();
         FlowLayout frame31Layout = new FlowLayout();
         frame31Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame31.setLayout(frame31Layout);
-        horizontalFrame31.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
-        horizontalFrame31.setMaximumSize(new Dimension((SCREENWIDTH-HORIZONTALFRAME32WIDTH)/2, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame31.setBorder(BorderFactory.createLineBorder(Color.black)); //for debugging
+        horizontalFrame31.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
+        JLabel shipsRemainingPlayer2 = new JLabel("Ships Remaining:");
+        horizontalFrame31.add(shipsRemainingPlayer2);
         
         JPanel horizontalFrame32 = new JPanel();
         FlowLayout frame32Layout = new FlowLayout();
         frame32Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame32.setLayout(frame32Layout);
         horizontalFrame32.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
-        horizontalFrame32.setMaximumSize(new Dimension(HORIZONTALFRAME32WIDTH, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame32.setMaximumSize(new Dimension(HORIZONTALFRAME32WIDTH, SCREENHEIGHT));
         
         JPanel horizontalFrame33 = new JPanel();
         FlowLayout frame33Layout = new FlowLayout();
         frame33Layout.setAlignment(FlowLayout.LEFT);
         horizontalFrame33.setLayout(frame33Layout);
         horizontalFrame33.setBorder(BorderFactory.createLineBorder(Color.pink)); //for debugging
-        horizontalFrame33.setMaximumSize(new Dimension((SCREENWIDTH-HORIZONTALFRAME32WIDTH)/2, (SCREENHEIGHT-VERTICALFRAME2HEIGHT)/2));
+        horizontalFrame33.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
 
         GridLayout player1GridLayout = new GridLayout(ROWS+1, COLS+1);
-        playerGridPanel[0].setPreferredSize(new Dimension(200, 200));
+        playerGridPanel[0].setPreferredSize(new Dimension(350, 350));
         playerGridPanel[0].setBorder(BorderFactory.createLineBorder(Color.black, 2));
         playerGridPanel[0].setBackground(new Color(200, 200, 200));
         playerGridPanel[0].setLayout(player1GridLayout);
 
         GridLayout player2GridLayout = new GridLayout(ROWS+1, COLS+1);
-        playerGridPanel[1].setPreferredSize(new Dimension(200, 200));
+        playerGridPanel[1].setPreferredSize(new Dimension(350, 350));
         playerGridPanel[1].setBorder(BorderFactory.createLineBorder(Color.black, 2));
         playerGridPanel[1].setBackground(new Color(200, 200, 200));
         playerGridPanel[1].setLayout(player2GridLayout);
@@ -194,6 +198,8 @@ public class Battleship extends JFrame implements ActionListener{
                         content = "X";
                     }else if(status == 2){
                         content = "O";
+                    }else if(status == 3){
+                        content = "S";
                     }
                 }
                 JLabel character = new JLabel(content, SwingConstants.CENTER);
