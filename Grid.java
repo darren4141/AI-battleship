@@ -38,6 +38,10 @@ public class Grid {
         return gridStatus[x][y];
     }
 
+    public void setGridStatus(int x, int y, int status){
+        gridStatus[x][y] = status;
+    }
+
     public int[][] getEntireGridStatus(){
         return gridStatus;
     }

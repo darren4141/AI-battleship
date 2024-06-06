@@ -3,6 +3,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -271,6 +272,23 @@ public class Battleship extends JFrame implements ActionListener{
                     if(player[i].isAI()){
                         int[] hit = player[i].target(player[j].getGrid());
                         player[j].getGrid().attack(hit[0], hit[1]);
+
+                        String[] options = {"Hit", "Miss", "Sunk"};
+                        int choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + hit[0] + ", " + hit[1] + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+
+                        while(choice != 0 && choice != 1 && choice != 2){
+                            choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + hit[0] + ", " + hit[1] + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+                        }
+
+                        if(choice == 0){
+                            System.out.println("choice is 0");
+                            System.out.println(hit[0] + " " + hit[1]);
+                            player[j].getGrid().setGridStatus(hit[0], hit[1], 2);
+                        }else if(choice == 1){
+
+                        }else if(choice == 2){
+
+                        }
                     }else{
     
                         int[] hit = new int[2];
