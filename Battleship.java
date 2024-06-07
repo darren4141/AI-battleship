@@ -270,11 +270,8 @@ public class Battleship extends JFrame implements ActionListener{
                         j = 0;
                     }
                     if(player[i].isAI()){
-                        // int[] hit = player[i].target(player[j].getGrid());
-                        int[] hit = new int[2];
+                        int[] hit = player[i].target(player[j].getGrid());
 
-                        hit[0] = (int)(Math.random() * 2);
-                        hit[1] = (int)(Math.random() * 2);
                         player[j].getGrid().attack(hit[0], hit[1]);
                         // player[j].getGrid().attack((int)(Math.random() * 2), (int)(Math.random() * 2));
 

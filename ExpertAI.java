@@ -284,7 +284,6 @@ public class ExpertAI extends Captain{
 		return target;
 	}
 
-	}
 	
 	/**checks if there is a hit in the grid
 	 * 
