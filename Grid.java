@@ -50,16 +50,36 @@ public class Grid {
         return shipsRemaining;
     }
 
+    public void decrementShipsRemaining(){
+        shipsRemaining--;
+    }
+
     public int getShotsRecieved(){
         return shotsRecieved;
+    }
+
+    public void incrementShotsRecieved(){
+        shotsRecieved++;
     }
 
     public int getHits(){
         return hits;
     }
 
+    public void incrementHits(){
+        hits++;
+    }
+
     public int getMisses(){
         return misses;
+    }
+    
+    public void incrementMisses(){
+        misses++;
+    }
+
+    public void decrementMisses(){
+        misses--;
     }
 
     public void attack(int x, int y){

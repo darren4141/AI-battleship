@@ -70,38 +70,114 @@ public class ExpertAI extends Captain{
 
     public int[] target(Grid enemyGrid){
         int[] targetCoordinates = new int[2];
-        int[][] heatMap = createHeatMap(enemyGrid);
+
+        boolean unfinishedHits = false;
+
+        int[] unfinishedHit = {-1, -1};
 
         for(int i = 0; i < 10; i++){
             for(int j = 0; j < 10; j++){
-                System.out.print(heatMap[i][j] + " ");
+                if(enemyGrid.getGridStatus(i, j) == 2){
+                    unfinishedHits = true;
+                    unfinishedHit[0] = i;
+                    unfinishedHit[1] = j;
+                }
             }
-            System.out.println();
         }
 
-        int maxX = 0;
-        int maxY = 0;
+        System.out.println("unfinished hit at " + unfinishedHit[0] + " " + unfinishedHit[1]);
 
-        for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
-                double dice = Math.random();
-                if(dice > 0.5){
-                    if(heatMap[i][j] >= heatMap[maxX][maxY]){
-                        maxX = i;
-                        maxY = j;
+        if(!unfinishedHits){
+
+            int[][] heatMap = createHeatMap(enemyGrid);
+
+            System.out.println("Search mode");
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    System.out.print(heatMap[i][j] + " ");
+                }
+                System.out.println();
+            }
+    
+            int maxX = 0;
+            int maxY = 0;
+    
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    double dice = Math.random();
+                    if(dice > 0.5){
+                        if(heatMap[i][j] >= heatMap[maxX][maxY]){
+                            maxX = i;
+                            maxY = j;
+                        }
+                    }else{
+                        if(heatMap[i][j] > heatMap[maxX][maxY]){
+                            maxX = i;
+                            maxY = j;
+                        }
                     }
-                }else{
-                    if(heatMap[i][j] > heatMap[maxX][maxY]){
-                        maxX = i;
-                        maxY = j;
+    
+                }
+            }
+    
+            targetCoordinates[0] = maxX;
+            targetCoordinates[1] = maxY;
+        }else{
+            System.out.println("Destroy mode");
+            int[][] direction = {
+                {1, 0},
+                {0, 1},
+                {-1, 0},
+                {0, -1}
+            };
+
+            if(checkAdjacentHit(unfinishedHit, enemyGrid)){
+                int[] adjacentCoordinates = new int[2];
+                int[] shipDirection = new int[2];
+                for(int i = 0; i < 4; i++){
+                    if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
+
+                    }else if(enemyGrid.getGridStatus(unfinishedHit[0] + direction[i][0], unfinishedHit[1] + direction[i][1]) == 2){
+                        adjacentCoordinates[0] = unfinishedHit[0] + direction[i][0];
+                        adjacentCoordinates[1] = unfinishedHit[1] + direction[i][1];
+                        shipDirection[0] = direction[i][0];
+                        shipDirection[1] = direction[i][1];
                     }
                 }
 
+                if(adjacentCoordinates[0] + shipDirection[0] < 0 || adjacentCoordinates[0] + shipDirection[0] > 9 || adjacentCoordinates[1] + shipDirection[1] < 0 || adjacentCoordinates[1] + shipDirection[1] > 9 || enemyGrid.getGridStatus(adjacentCoordinates[0] + shipDirection[0], adjacentCoordinates[1] + shipDirection[1]) != 0){
+                    int count = 1;
+                    while(enemyGrid.getGridStatus(adjacentCoordinates[0] - shipDirection[0] * count, adjacentCoordinates[1] - shipDirection[1] * count) != 0){
+                        count++;
+                    }
+                    targetCoordinates[0] = adjacentCoordinates[0] - shipDirection[0] * count;
+                    targetCoordinates[1] = adjacentCoordinates[1] - shipDirection[1] * count;
+
+                }else{
+                    targetCoordinates[0] = adjacentCoordinates[0] + shipDirection[0];
+                    targetCoordinates[1] = adjacentCoordinates[1] + shipDirection[1];
+                }        
+
+            }else{
+                int[][] heatMap = createHeatMap(enemyGrid);
+
+                int maxX = -1;
+                int maxY = -1;
+                int maxHeat = 0;
+                for(int i = 0; i < 4; i++){
+                    if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
+
+                    }else if(heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]] > maxHeat){
+                        maxHeat = heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]];
+                        maxX = unfinishedHit[0] + direction[i][0];
+                        maxY = unfinishedHit[1] + direction[i][1];
+                    }
+                }
+
+                targetCoordinates[0] = maxX;
+                targetCoordinates[1] = maxY;
             }
         }
-
-        targetCoordinates[0] = maxX;
-        targetCoordinates[1] = maxY;
 
         return targetCoordinates;
         
@@ -267,22 +343,22 @@ public class ExpertAI extends Captain{
 	 * @param hit
 	 * @return
 	 */
-	public static int[] strike(int[][]guesses,int [][]heatMap, boolean hit) {
-		int[]target=new int[2];
-		if(hit==false) {//if there is a not hit then heatMap
-			//do the heatMap code
-		}
-		else if(hit){
-			int[] coord=getHit(guesses);
-			if(adjacentHit(guesses,coord)){//ADD "AND SAME SHIP" <=========
-				//strike the same direction
-			}
-			else{
-				target=strikeAround(guesses,coord);//this gets the coordinates of the target
-			}
-		}
-		return target;
-	}
+	// public static int[] strike(int[][]guesses,int [][]heatMap, boolean hit) {
+	// 	int[]target=new int[2];
+	// 	if(hit==false) {//if there is a not hit then heatMap
+	// 		//do the heatMap code
+	// 	}
+	// 	else if(hit){
+	// 		int[] coord=getHit(guesses);
+	// 		if(adjacentHit(guesses,coord)){//ADD "AND SAME SHIP" <=========
+	// 			//strike the same direction
+	// 		}
+	// 		else{
+	// 			target=strikeAround(guesses,coord);//this gets the coordinates of the target
+	// 		}
+	// 	}
+	// 	return target;
+	// }
 
 	
 	/**checks if there is a hit in the grid
@@ -318,32 +394,6 @@ public class ExpertAI extends Captain{
 		}
 		return coord;
 	}
-
-    /**gets the coordinate of the adjacent
-	 * 
-	 * @param grid
-	 * @return
-	 */
-	public static int[] getAdj(int [][]guesses, int[]coordOfHit) {
-		int[]coordOfAdj=new int[2];
-		if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {//adj is above
-			coordOfAdj[0]=coordOfHit[0]-1;
-			coordOfAdj[1]=coordOfHit[1];
-		}
-		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2) {
-			coordOfAdj[0]=coordOfHit[0];
-			coordOfAdj[1]=coordOfHit[1]+1;
-		}
-		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2) {
-			coordOfAdj[0]=coordOfHit[0]+1;
-			coordOfAdj[1]=coordOfHit[1];
-		}
-		else if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2) {
-			coordOfAdj[0]=coordOfHit[0];
-			coordOfAdj[1]=coordOfHit[1]-1;
-		}
-		return coordOfAdj;
-	}
 	
 	// /**depending on which of the three cases, the AI picks a target
 	//  * 
@@ -376,7 +426,8 @@ public class ExpertAI extends Captain{
 	 * @param coordOfHit
 	 * @return
 	 */
-	public static boolean adjacentHit(int[][]guesses, int[]coordOfHit) {
+	public static boolean checkAdjacentHit(int[]coordOfHit, Grid enemyGrid) {
+        int[][]guesses = enemyGrid.getEntireGridStatus();
 		boolean adjacent=false;
 		if(guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {
 			adjacent=true;
