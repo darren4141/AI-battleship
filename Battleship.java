@@ -19,6 +19,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.Flow;
 
 public class Battleship extends JFrame implements ActionListener{
     static final int SCREENWIDTH = 1000;
@@ -112,6 +113,13 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame13.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
         horizontalFrame13.add(namePlayer1);
 
+        JPanel horizontalFrame21 = new JPanel();
+        FlowLayout frame21Layout = new FlowLayout();
+        frame21Layout.setAlignment(FlowLayout.CENTER);
+        horizontalFrame21.setLayout(frame21Layout);
+        horizontalFrame21.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
+        horizontalFrame21.setMaximumSize(new Dimension(350, VERTICALFRAME2WIDTH));
+
         JPanel horizontalFrame31 = new JPanel();
         FlowLayout frame31Layout = new FlowLayout();
         frame31Layout.setAlignment(FlowLayout.LEFT);
@@ -155,6 +163,7 @@ public class Battleship extends JFrame implements ActionListener{
         verticalFrame1.add(horizontalFrame12);
         horizontalFrame12.add(playerGridPanel[1]);
         verticalFrame1.add(horizontalFrame13);
+        verticalFrame2.add(horizontalFrame21);
         verticalFrame3.add(horizontalFrame31);
         verticalFrame3.add(horizontalFrame32);
         horizontalFrame32.add(playerGridPanel[0]);
@@ -280,10 +289,10 @@ public class Battleship extends JFrame implements ActionListener{
 
 
                         String[] options = {"Hit", "Miss", "Sunk"};
-                        int choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + (hit[0] + 1) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+                        int choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
 
                         while(choice != 0 && choice != 1 && choice != 2){
-                            choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + (hit[0] + 1) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+                            choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
                         }
 
                         if(choice == 0){
