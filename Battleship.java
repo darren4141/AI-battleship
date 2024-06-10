@@ -13,21 +13,22 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.Scanner;
-import java.util.concurrent.Flow;
 
 public class Battleship extends JFrame implements ActionListener{
+    static Captain[] player = new Captain[2];
     static final int SCREENWIDTH = 1000;
     static final int SCREENHEIGHT = 600;
     static final int ROWS = 10;
     static final int COLS = 10;
     static JPanel[] playerGridPanel = new JPanel[2];
-    static Captain[] player = new Captain[2];
+    static JPanel container = new JPanel();
+    static JPanel intro = new JPanel();
+    static Container contentPane; //main container
 
     static JLabel namePlayer1 = new JLabel("'s GRID:");
     static JLabel shipsRemainingPlayer1 = new JLabel("Ships Remaining:");
@@ -40,7 +41,9 @@ public class Battleship extends JFrame implements ActionListener{
     static JLabel missesPlayer2 = new JLabel("Misses: ");
     static JLabel hitsPlayer2 = new JLabel("Hits: ");
     
-    static JTextField mainPromptField = new JTextField();
+    static JTextField mainPromptField = new JTextField(4);
+    static JTextField nameField = new JTextField(10);
+    static JButton fire = new JButton("FIRE!");
 
     static int turn = 0;
 
@@ -49,11 +52,20 @@ public class Battleship extends JFrame implements ActionListener{
         playerGridPanel[0] = new JPanel();
         playerGridPanel[1] = new JPanel();
         player[0] = new Player("Jo");
-        player[1] = new ExpertAI("Bot");
+        player[1] = new ExpertAI("B");
+
+        player[1].setName("Bot");
         setTitle("Battleship");
         setSize(SCREENWIDTH, SCREENHEIGHT);
 
-        JPanel container = new JPanel(); //main panel
+        JLabel introduction = new JLabel("Welcome! What is your name?");
+        intro.add(introduction);
+        intro.add(nameField);
+        JButton enterGame = new JButton("Enter");
+        enterGame.addActionListener(this);
+        intro.add(enterGame);
+
+
         BoxLayout containerFrame = new BoxLayout(container, BoxLayout.X_AXIS);
         container.setLayout(containerFrame);
         
@@ -64,12 +76,6 @@ public class Battleship extends JFrame implements ActionListener{
         verticalFrame2.setMaximumSize(new Dimension(VERTICALFRAME2WIDTH, SCREENHEIGHT)); //set the maximum size
         verticalFrame2.setLayout(verticalFrame2Layout);
         verticalFrame2.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
-        mainPromptField.setSize(50, 100);
-        mainPromptField.setMaximumSize(new Dimension(100, 30));
-        verticalFrame2.add(mainPromptField);
-        JButton fire = new JButton("FIRE!");
-        fire.addActionListener(this);
-        verticalFrame2.add(fire);
 
         JPanel verticalFrame1 = new JPanel();
         BoxLayout verticalFrame1Layout = new BoxLayout(verticalFrame1, BoxLayout.Y_AXIS);
@@ -113,12 +119,32 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame13.setMaximumSize(new Dimension((SCREENWIDTH - VERTICALFRAME2WIDTH)/2, SCREENHEIGHT));
         horizontalFrame13.add(namePlayer1);
 
+        JPanel horizontalFrame20 = new JPanel();
+        FlowLayout frame20Layout = new FlowLayout();
+        frame20Layout.setAlignment(FlowLayout.CENTER);
+        horizontalFrame20.setLayout(frame20Layout);
+        horizontalFrame20.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
+        horizontalFrame20.setMaximumSize(new Dimension(450, 30));
+        JLabel label20 = new JLabel("Where would you like to attack? ex: A1");
+        horizontalFrame20.add(label20);
+
         JPanel horizontalFrame21 = new JPanel();
         FlowLayout frame21Layout = new FlowLayout();
         frame21Layout.setAlignment(FlowLayout.CENTER);
         horizontalFrame21.setLayout(frame21Layout);
         horizontalFrame21.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
-        horizontalFrame21.setMaximumSize(new Dimension(350, VERTICALFRAME2WIDTH));
+        horizontalFrame21.setMaximumSize(new Dimension(450, 30));
+        mainPromptField.setSize(200, 100);
+        horizontalFrame21.add(mainPromptField);
+
+        JPanel horizontalFrame22 = new JPanel();
+        FlowLayout frame22Layout = new FlowLayout();
+        frame22Layout.setAlignment(FlowLayout.CENTER);
+        horizontalFrame22.setLayout(frame22Layout);
+        horizontalFrame22.setBorder(BorderFactory.createLineBorder(Color.red)); //for debugging
+        horizontalFrame22.setMaximumSize(new Dimension(450, 50));
+        fire.addActionListener(this);
+        horizontalFrame22.add(fire);
 
         JPanel horizontalFrame31 = new JPanel();
         FlowLayout frame31Layout = new FlowLayout();
@@ -158,12 +184,14 @@ public class Battleship extends JFrame implements ActionListener{
         playerGridPanel[1].setForeground(new Color(200, 200, 200));
         playerGridPanel[1].setLayout(player2GridLayout);
 
-        Container contentPane = getContentPane(); //main container
+        contentPane = getContentPane();
         verticalFrame1.add(horizontalFrame11);
         verticalFrame1.add(horizontalFrame12);
         horizontalFrame12.add(playerGridPanel[1]);
         verticalFrame1.add(horizontalFrame13);
+        verticalFrame2.add(horizontalFrame20);
         verticalFrame2.add(horizontalFrame21);
+        verticalFrame2.add(horizontalFrame22);
         verticalFrame3.add(horizontalFrame31);
         verticalFrame3.add(horizontalFrame32);
         horizontalFrame32.add(playerGridPanel[0]);
@@ -171,14 +199,14 @@ public class Battleship extends JFrame implements ActionListener{
         container.add(verticalFrame1);
         container.add(verticalFrame2);
         container.add(verticalFrame3);
-        contentPane.add(container);
+        contentPane.add(intro);
 
-        container.getRootPane().setDefaultButton(fire);
-
+        intro.getRootPane().setDefaultButton(enterGame);
 
         setVisible(true);
         setResizable(true);
 
+        repaint();
     }
 
     public static void main(String[]args) throws IOException{
@@ -220,6 +248,17 @@ public class Battleship extends JFrame implements ActionListener{
 
     public void actionPerformed(ActionEvent event){
         String command = event.getActionCommand();
+
+        if(command.equals("Enter")){
+            player[0].setName(nameField.getText());
+            System.out.println(player[0].getName());
+            System.out.println("Enter pressed");
+            contentPane.add(container);
+            container.setVisible(true);
+            container.getRootPane().setDefaultButton(fire);
+            intro.setVisible(false);
+            updateLabels();
+        }
 
         if(command.equals("FIRE!")){
             boolean validInput = true;

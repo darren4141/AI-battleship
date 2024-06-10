@@ -26,6 +26,11 @@ public class ExpertAI extends Captain{
         return name;
     }
 
+
+    public void setName(String name){
+        this.name = name;
+    }
+
     public void placeShips(){
         Ship[] ships = myGrid.getShips();
             int[][] directionMap = {
