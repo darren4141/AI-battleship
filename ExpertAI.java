@@ -1,11 +1,27 @@
+/**Name: J. Lai and D. Liu
+ * File: ExpertAI.java
+ * Purpose: Create the Expert AI class that includes advanced battleship strategies.
+ * Date: June 10, 2024
+ */
 public class ExpertAI extends Captain{
+
+    //declare variables to be used in the code
     String name;
+
+    //Create a new grid object
     private static Grid myGrid = new Grid();
 
+    /**Sets the name for the Expert AI
+     * 
+     * @param name the name of the expert AI
+     */
     public ExpertAI(String name){
         this.name = name;
     }
 
+    /**returns the name of the expert AI
+     * 
+     */
     public String getName(){
         return name;
     }
@@ -145,50 +161,56 @@ public class ExpertAI extends Captain{
         // }
     }
 
+    /**Returns the coordinate of a target to be struck.
+     * 
+     */
     public int[] target(Grid enemyGrid){
+        //create a new array to store coordinates of the target
         int[] targetCoordinates = new int[2];
 
         boolean unfinishedHits = false;
 
         int[] unfinishedHit = {-1, -1};
 
-        for(int i = 0; i < 10; i++){
-            for(int j = 0; j < 10; j++){
-                if(enemyGrid.getGridStatus(i, j) == 2){
+        for(int i = 0; i < 10; i++){//i is a block variable
+            for(int j = 0; j < 10; j++){//j is a block variable
+                if(enemyGrid.getGridStatus(i, j) == 2){//if true, there is a unsunk ship that is hit
                     unfinishedHits = true;
-                    unfinishedHit[0] = i;
-                    unfinishedHit[1] = j;
+                    unfinishedHit[0] = i;//sets the y coordinate of the unfinished hit
+                    unfinishedHit[1] = j;//sets the x coordinate of the unfinished hit
                 }
             }
         }
 
         System.out.println("unfinished hit at " + unfinishedHit[0] + " " + unfinishedHit[1]);
 
-        if(!unfinishedHits){
+        if(!unfinishedHits){//if true, use heat map strategy
 
+            //declare and initialize 2D array for heat map
             int[][] heatMap = createHeatMap(enemyGrid);
 
             System.out.println("Search mode");
-            for(int i = 0; i < 10; i++){
-                for(int j = 0; j < 10; j++){
+            for(int i = 0; i < 10; i++){//i is a block variable
+                for(int j = 0; j < 10; j++){//j is a block variable
                     System.out.print(heatMap[i][j] + " ");
                 }
                 System.out.println();
             }
     
+            //declaring and initializing variables to store the first index of the 2D array as the max
             int maxX = 0;
             int maxY = 0;
     
-            for(int i = 0; i < 10; i++){
-                for(int j = 0; j < 10; j++){
-                    double dice = Math.random();
-                    if(dice > 0.5){
-                        if(heatMap[i][j] >= heatMap[maxX][maxY]){
+            for(int i = 0; i < 10; i++){//i is a block variable
+                for(int j = 0; j < 10; j++){//j is a block variable
+                    double dice = Math.random();//variable that selects a random number of either 0 or 1
+                    if(dice > 0.5){//if true, then if the coordinate is greater than or equal to the max then save those coordinates
+                        if(heatMap[i][j] >= heatMap[maxX][maxY]){//if true, store coordinate of the new max number
                             maxX = i;
                             maxY = j;
                         }
                     }else{
-                        if(heatMap[i][j] > heatMap[maxX][maxY]){
+                        if(heatMap[i][j] > heatMap[maxX][maxY]){//if true, store coordinate of the new max number
                             maxX = i;
                             maxY = j;
                         }
@@ -197,10 +219,13 @@ public class ExpertAI extends Captain{
                 }
             }
     
+            //save the coordinate with the highest probability in target coordinate array
             targetCoordinates[0] = maxX;
             targetCoordinates[1] = maxY;
-        }else{
+        }else{//if there is a unfinsihed boat, attack in straight line
             System.out.println("Destroy mode");
+
+            //2D array for set directions: up, right, down, left
             int[][] direction = {
                 {1, 0},
                 {0, 1},
@@ -208,10 +233,11 @@ public class ExpertAI extends Captain{
                 {0, -1}
             };
 
-            if(checkAdjacentHit(unfinishedHit, enemyGrid)){
+            if(checkAdjacentHit(unfinishedHit, enemyGrid)){//if true, 
+                //declare arrays to be used in the code
                 int[] adjacentCoordinates = new int[2];
                 int[] shipDirection = new int[2];
-                for(int i = 0; i < 4; i++){
+                for(int i = 0; i < 4; i++){//i is a block variable
                     if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
 
                     }else if(enemyGrid.getGridStatus(unfinishedHit[0] + direction[i][0], unfinishedHit[1] + direction[i][1]) == 2){
@@ -260,6 +286,11 @@ public class ExpertAI extends Captain{
         
     }
 
+    /**Creates a 2D heat map that displays the probability of a ship in each grid
+     * 
+     * @param enemyGrid The grid that the method will create a heat map of
+     * @return a 2D array of integer number that represents the probability of a ship being in each coordinate
+     */
     public static int [][] createHeatMap(Grid enemyGrid){
         Ship[] ship = enemyGrid.getShips();
         boolean destroyer = ship[0].getAlive();
@@ -398,12 +429,12 @@ public class ExpertAI extends Captain{
         return grid;
     }
 
-    /**Checks if the coordinates enterered is empty or not
+    /**Checks if the coordinates enterered is unknown
      * 
-     * @param grid
-     * @param row
-     * @param col
-     * @return
+     * @param grid the grid that you are attacking and is used to check coordinate
+     * @param row the row of the coordinate being checked
+     * @param col the column of the coordinate being checked
+     * @return whether the coordinate entered is unknown
      */
     public static boolean emptySquare(int row, int col, int [][]grid) {
         if(grid[row][col]==0) {
@@ -417,9 +448,9 @@ public class ExpertAI extends Captain{
 	
 	/**checks if there is hits adjacent to each other
 	 * 
-	 * @param guesses
-	 * @param coordOfHit
-	 * @return
+	 * @param enemyGrid the grid used ot check for adjacent hits
+	 * @param coordOfHit the coordinate of the hit
+	 * @return whether there is a hit adjacent to each other
 	 */
 	public static boolean checkAdjacentHit(int[]coordOfHit, Grid enemyGrid) {
         int[][]guesses = enemyGrid.getEntireGridStatus();
