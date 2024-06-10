@@ -13,6 +13,10 @@ public class Player extends Captain{
         return name;
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
     public void placeShips(){
 
     }
@@ -44,5 +48,6 @@ public class Player extends Captain{
     public Grid getGrid(){
         return myGrid;
     }
+
 
 }
