@@ -82,10 +82,12 @@ public class Grid {
         misses--;
     }
 
-    public void attack(int x, int y){
+    public int attack(int x, int y){
+        shotsRecieved++;
         if(gridState[x][y].equals("N")){
             gridStatus[x][y] = 1;
             misses++;
+            return 1;
         }else{
             gridStatus[x][y] = 2;
             int shipNumber = Character.valueOf(gridState[x][y].charAt(0))-65;
@@ -102,11 +104,11 @@ public class Grid {
                     System.out.println(i[0] + " " + i[1]);
                     gridStatus[i[0]][i[1]] = 3;
                 }
-
+                return 3;
             }
+            return 2;
         }
 
-        shotsRecieved++;
     }
 
     public Ship[] getShips(){
