@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
-
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -19,7 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.LinkedList;
-import java.util.Scanner;
+
 
 public class Battleship extends JFrame implements ActionListener{
     static Captain[] player = new Captain[2];
@@ -30,6 +29,7 @@ public class Battleship extends JFrame implements ActionListener{
     static JPanel[] playerGridPanel = new JPanel[2];
     static JPanel container = new JPanel();
     static JPanel intro = new JPanel();
+    static JPanel horizontalFrame23 = new JPanel();
     static Container contentPane; //main container
 
     static JLabel namePlayer1 = new JLabel("'s GRID:");
@@ -47,7 +47,7 @@ public class Battleship extends JFrame implements ActionListener{
     static JTextField nameField = new JTextField(10);
     static JButton fire = new JButton("FIRE!");
 
-    static int turn = 0;
+    static int turn = 1;
     static LinkedList<String> systemMessages = new LinkedList<>();
 
     static String seaBlue = "#94b1c9";
@@ -198,6 +198,16 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame22.add(fire);
         horizontalFrame22.setBackground(Color.decode(backgroundColor));
 
+        JPanel horizontalFrame23Container = new JPanel();
+        FlowLayout horizontalFrame23ContainerLayout = new FlowLayout();
+        horizontalFrame23ContainerLayout.setAlignment(FlowLayout.LEFT);
+        horizontalFrame23Container.setLayout(horizontalFrame23ContainerLayout);
+        horizontalFrame23Container.setBackground(Color.decode(seaBlue));
+
+        BoxLayout horizontalFrame23Layout = new BoxLayout(horizontalFrame23, BoxLayout.Y_AXIS);
+        horizontalFrame23.setLayout(horizontalFrame23Layout);
+        horizontalFrame23.setBackground(Color.decode(seaBlue));
+
         JPanel horizontalFrame31 = new JPanel();
         FlowLayout frame31Layout = new FlowLayout();
         frame31Layout.setAlignment(FlowLayout.LEFT);
@@ -250,6 +260,8 @@ public class Battleship extends JFrame implements ActionListener{
         verticalFrame2.add(horizontalFrame20);
         verticalFrame2.add(horizontalFrame21);
         verticalFrame2.add(horizontalFrame22);
+        verticalFrame2.add(horizontalFrame23Container);
+        horizontalFrame23Container.add(horizontalFrame23);  
         verticalFrame3.add(horizontalFrame31);
         verticalFrame3.add(horizontalFrame32);
         horizontalFrame32.add(playerGridPanel[0]);
@@ -274,11 +286,7 @@ public class Battleship extends JFrame implements ActionListener{
 
     public static void main(String[]args) throws IOException{
         Battleship myBattleship = new Battleship();
-        Scanner sc = new Scanner(System.in);
-        boolean gameIsOver = false;
-
         player[1].placeShips();
-
         player[1].getGrid().printGridState();
 
         // while(!gameIsOver){
@@ -304,8 +312,7 @@ public class Battleship extends JFrame implements ActionListener{
 
         refreshGrids();
         updateLabels();
-        System.out.println("Grids refreshed");
-        System.out.println("Game over");
+
     }
 
 
@@ -316,15 +323,34 @@ public class Battleship extends JFrame implements ActionListener{
             System.out.println("New game pressed");
             String s = JOptionPane.showInputDialog("What is your name?");
             if(!s.equals(null)){
-                player[0].setName(s);
-                System.out.println("Enter pressed");
-                contentPane.add(container);
-                container.setVisible(true);
-                container.getRootPane().setDefaultButton(fire);
-                intro.setVisible(false);
-                updateLabels();
+
             }
 
+            String[] options = {"Simple", "Expert"};
+            int difficultyChoice = JOptionPane.showOptionDialog(null, "What difficulty AI would you like to play against", "Difficulty", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+
+            while(difficultyChoice == -1){
+                difficultyChoice = JOptionPane.showOptionDialog(null, "What difficulty AI would you like to play against", "Difficulty", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
+            }
+
+            if(difficultyChoice == 0){
+                player[1] = new SimpleAI("Simple Bot");
+            }else if(difficultyChoice == 1){
+                player[1] = new ExpertAI("Hard Bot");
+            }
+
+            player[0].setName(s);
+
+            turn = (int)(Math.random() * 2);
+            String firstUp = player[turn].getName();
+            JOptionPane.showMessageDialog(this, "A random toss has decided that " + firstUp + " is first up!");
+
+            System.out.println("Enter pressed");
+            contentPane.add(container);
+            container.setVisible(true);
+            container.getRootPane().setDefaultButton(fire);
+            intro.setVisible(false);
+            updateLabels();
         }
 
         if(command.equals("Instructions")){
@@ -390,13 +416,18 @@ public class Battleship extends JFrame implements ActionListener{
             }
 
             if(validInput){
-                for(int i = 0; i < 2; i++){
+                for(int k = 0; k < 2; k++){
+                    int i;
                     int j;
-                    if(i == 0){
-                        j = 1;
+
+                    if(turn == 0){
+                        i = k;
+                        j = Math.abs(k-1);
                     }else{
-                        j = 0;
+                        i = Math.abs(k-1);
+                        j = k;
                     }
+
                     if(player[i].isAI()){
                         int[] hit = player[i].target(player[j].getGrid());
 
@@ -443,13 +474,13 @@ public class Battleship extends JFrame implements ActionListener{
                                 for(int[] cell : cells){
                                     player[j].getGrid().setGridStatus(cell[0], cell[1], 3);
                                 }
-                                systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                                systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                             }else{
-                                systemMessages.add(player[i].getName() + " hit " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                                systemMessages.add(player[i].getName() + " hit " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                             }
                         }else if(choice == 1){
                             player[j].getGrid().incrementMisses();
-                            systemMessages.add(player[i].getName() + "missed at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                            systemMessages.add(player[i].getName() + " missed at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }else if(choice == 2){
                             String[] shipNames = new String[5];
                             Ship[] s = player[j].getGrid().getShips();
@@ -474,7 +505,7 @@ public class Battleship extends JFrame implements ActionListener{
 
                             s[shipChoice].sink();
                             player[j].getGrid().decrementShipsRemaining();
-                            systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                            systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipChoice].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }
                     }else{
                         int[] hit = new int[2];
@@ -493,15 +524,15 @@ public class Battleship extends JFrame implements ActionListener{
                         int status = player[j].getGrid().attack(hit[0], hit[1]);
 
                         if(status == 1){
-                            systemMessages.add(player[i].getName() + "missed at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                            systemMessages.add(player[i].getName() + " missed at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }else if(status == 2){
                             int shipNumber = Character.valueOf(player[j].getGrid().getGridState(hit[0], hit[1]).charAt(0))-65;
                             Ship[] s = player[j].getGrid().getShips();
-                            systemMessages.add(player[i].getName() + " hit " + player[j].getName() + "'s " + s[shipNumber].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                            systemMessages.add(player[i].getName() + " hit " + player[j].getName() + "'s " + s[shipNumber].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }else if(status == 3){
                             int shipNumber = Character.valueOf(player[j].getGrid().getGridState(hit[0], hit[1]).charAt(0))-65;
                             Ship[] s = player[j].getGrid().getShips();
-                            systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipNumber].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + hit[1] + ")");
+                            systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipNumber].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }
                     }
                 }
@@ -530,6 +561,16 @@ public class Battleship extends JFrame implements ActionListener{
         shotsPlayer2.setText("Shots Taken: " + player[0].getGrid().getShotsRecieved());
         hitsPlayer2.setText("Hits: " + player[0].getGrid().getHits());
         missesPlayer2.setText("Misses: " + player[0].getGrid().getMisses());
+
+        horizontalFrame23.removeAll();
+
+        horizontalFrame23.add(new JLabel("History:"));
+
+        for(int i = systemMessages.size() - 1; i >= 0; i--){
+            horizontalFrame23.add(new JLabel(systemMessages.get(i)));
+
+        }
+
     }
 
     public static void refreshGrids(){
