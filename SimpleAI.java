@@ -1,19 +1,39 @@
+/**Names: J. Lai and D. Liu
+ * File: SimpleAI.java
+ * Purpose: Create the Simple AI class that does not include advanced battleship strategies.
+ * Date: June 10, 2024
+ */
 public class SimpleAI extends Captain{
+    //declare variables to be used
     private String name;
+    //creatind grid object
     private Grid myGrid = new Grid();
 
-    public SimpleAI(String name){
+    /**refers name as the current class variable
+     * 
+     * @param name name of the SimpleAI
+     */
+    public SimpleAI(String name){//constructor
         this.name = name;
     }
 
+    /**sets the name of the AI
+     * 
+     */
     public void setName(String name){
         this.name = name;
     }
 
+    /**returns the name of the AI
+     * 
+     */
     public String getName(){
         return name;
     }
 
+    /**returns whether it is an AI or not
+     * 
+     */
     public boolean isAI(){
         return true;
     }
@@ -153,23 +173,28 @@ public class SimpleAI extends Captain{
         // }
     }
 
+    /**returns the coordinate of target
+     * 
+     */
     public int[] target(Grid enemyGrid){
+        //declaring and initializing variables to be used
         int[] coords = new int[2];
-
         boolean isEmpty = false;
 
         while(!isEmpty){
-            coords[0] = (int)(Math.random() * 10);
-            coords[1] = (int)(Math.random() * 10);
+            coords[0] = (int)(Math.random() * 10);//generate random x coordinate
+            coords[1] = (int)(Math.random() * 10);//generate random y coordinate
 
-            if(enemyGrid.getGridStatus(coords[0], coords[1]) == 0){
+            if(enemyGrid.getGridStatus(coords[0], coords[1]) == 0){//if true, the coordinate on enemy grid is empty
                 isEmpty = true;
             }
         }
-
         return coords;
     }
 
+    /**returns the grid
+     * 
+     */
     public Grid getGrid(){
         return myGrid;
     }
