@@ -460,16 +460,16 @@ public class ExpertAI extends Captain{
         //declaring and initializing 2D array to enemy's grid
         int[][]guesses = enemyGrid.getEntireGridStatus();
 		boolean adjacent=false;
-		if(coordOfHit[0]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {//if true, there is an adjacent hit above original hit
+		if(coordOfHit[0]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2 && myGrid.getGridState(coordOfHit[0], coordOfHit[1]).equals(myGrid.getGridState(coordOfHit[0] - 1, coordOfHit[1]))) {//if true, there is an adjacent hit above original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[1]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2) {//if true, there is an adjacent hit to the right of original hit
+		else if(coordOfHit[1]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2 && myGrid.getGridState(coordOfHit[0], coordOfHit[1]).equals(myGrid.getGridState(coordOfHit[0], coordOfHit[1] + 1))) {//if true, there is an adjacent hit to the right of original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[0]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2) {//if true, there is an adjacent hit below original hit
+		else if(coordOfHit[0]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2 && myGrid.getGridState(coordOfHit[0], coordOfHit[1]).equals(myGrid.getGridState(coordOfHit[0] + 1, coordOfHit[1]))) {//if true, there is an adjacent hit below original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[1]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2) {//if true, there is an adjacent hit to the left of original hit
+		else if(coordOfHit[1]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2 && myGrid.getGridState(coordOfHit[0], coordOfHit[1]).equals(myGrid.getGridState(coordOfHit[0], coordOfHit[1] - 1))) {//if true, there is an adjacent hit to the left of original hit
 			adjacent=true;
 		}
 		return adjacent;
