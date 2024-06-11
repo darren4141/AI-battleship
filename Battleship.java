@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -68,6 +69,16 @@ public class Battleship extends JFrame implements ActionListener{
 
         BoxLayout introLayout = new BoxLayout(intro, BoxLayout.Y_AXIS);
         intro.setLayout(introLayout);
+
+        JPanel intro4 = new JPanel();
+        FlowLayout intro4Layout = new FlowLayout();
+        intro4Layout.setAlignment(FlowLayout.LEFT);
+        String [] contents = {"Hey Captain! Let's play:", "Look! Let's play:", "Hey! It's time to play:", "I'm bored! Let's play:", "Hey you! Let's play: "};
+        int randomPrompt = (int)(Math.random() * contents.length);
+        JLabel title = new JLabel(contents[randomPrompt]);
+        title.setFont(new Font("Sans-Serif", Font.BOLD ,32));
+        intro4.add(title);
+        intro4.setBackground(Color.decode(backgroundColor));
 
         JPanel intro0 = new JPanel();
         FlowLayout intro0Layout = new FlowLayout();
@@ -270,6 +281,7 @@ public class Battleship extends JFrame implements ActionListener{
         container.add(verticalFrame2);
         container.add(verticalFrame3);
 
+        intro.add(intro4);
         intro.add(intro0);
         intro.add(intro1);
         // intro.add(intro2);
