@@ -26,7 +26,9 @@ public class ExpertAI extends Captain{
         return name;
     }
 
-
+    /**sets the name for the expert AI
+     * 
+     */
     public void setName(String name){
         this.name = name;
     }
@@ -100,7 +102,7 @@ public class ExpertAI extends Captain{
         ships[4].setHeadY(0);
         direction = 1;
         
-        for(int i = 0; i < ships[4].getLength(); i++){
+        for(int i = 0; i < ships[4].getLength(); i++){//i is a block variable
             // System.out.println(s.getHeadX() + directionMap[direction][4] * i + " " +  (s.getHeadY() + directionMap[direction][4] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][4] * i, s.getHeadY() + directionMap[direction][4] * i));
             myGrid.setGridState(ships[4].getHeadX() + directionMap[direction][0] * i, ships[4].getHeadY() + directionMap[direction][1] * i, Character.toString(ships[4].getSignature()));
         
@@ -238,14 +240,15 @@ public class ExpertAI extends Captain{
                 {0, -1}
             };
 
-            if(checkAdjacentHit(unfinishedHit, enemyGrid)){//if true, 
+            if(checkAdjacentHit(unfinishedHit, enemyGrid)){
                 //declare arrays to be used in the code
                 int[] adjacentCoordinates = new int[2];
                 int[] shipDirection = new int[2];
+                //loop to go through the different directions
                 for(int i = 0; i < 4; i++){//i is a block variable
                     if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
 
-                    }else if(enemyGrid.getGridStatus(unfinishedHit[0] + direction[i][0], unfinishedHit[1] + direction[i][1]) == 2){
+                    }else if(enemyGrid.getGridStatus(unfinishedHit[0] + direction[i][0], unfinishedHit[1] + direction[i][1]) == 2){//if true, store coordinates for the adjacent hit
                         adjacentCoordinates[0] = unfinishedHit[0] + direction[i][0];
                         adjacentCoordinates[1] = unfinishedHit[1] + direction[i][1];
                         shipDirection[0] = direction[i][0];
@@ -297,6 +300,8 @@ public class ExpertAI extends Captain{
      * @return a 2D array of integer number that represents the probability of a ship being in each coordinate
      */
     public static int [][] createHeatMap(Grid enemyGrid){
+
+        //declare variables to be used
         Ship[] ship = enemyGrid.getShips();
         boolean destroyer = ship[0].getAlive();
         boolean submarine = ship[1].getAlive();
@@ -304,24 +309,23 @@ public class ExpertAI extends Captain{
         boolean battleship = ship[3].getAlive();
         boolean carrier = ship[4].getAlive();
         int[][] guesses = enemyGrid.getEntireGridStatus();
+        int [][] grid = new int[10][10];
 
         //check what boats are remaining
-        int [][] grid = new int[10][10];
         if (destroyer==true){//if destroyer is alive, then add up probability
-            for (int row = 0; row < grid.length; row++){
-                for (int col = 0; col < grid.length - 1; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true){
+            for (int row = 0; row < grid.length; row++){//row is a block variable
+                for (int col = 0; col < grid.length - 1; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true){//if there are two adjacent empty squares in the horizontal direction
+                       //increment both coordinates
                         grid[row][col] += 1;
                         grid[row][col+1] += 1;
                     }
                 }
             }
-            for (int row = 0; row < grid.length - 1; row++)
-            {
-                for ( int col = 0; col < grid.length; col++)
-                {
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true)
-                    {
+            for (int row = 0; row < grid.length - 1; row++){//row is a block variable
+                for ( int col = 0; col < grid.length; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true){//does the same but in vertical direction
+                        //increment both coordinates
                         grid[row][col] += 1;
                         grid[row+1][col] += 1;
                     }
@@ -330,21 +334,20 @@ public class ExpertAI extends Captain{
         }
 
         if (submarine==true){//if submarine is alive, then add up probability
-            for (int row = 0; row < grid.length; row++){
-                for (int col = 0; col < grid.length - 2; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true){
+            for (int row = 0; row < grid.length; row++){//row is a block variable
+                for (int col = 0; col < grid.length - 2; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true){//if there are three adjacent empty squares in the horizontal direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row][col+1] += 1;
                         grid[row][col+2] += 1;
                     }
                 }
             }
-
-
-
-            for (int row = 0; row < grid.length - 2; row++){
-                for ( int col = 0; col < grid.length; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true){
+            for (int row = 0; row < grid.length - 2; row++){//row is a block variable
+                for ( int col = 0; col < grid.length; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true){//does the same but in vertical direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row+1][col] += 1;
                         grid[row+2][col] += 1;
@@ -354,21 +357,20 @@ public class ExpertAI extends Captain{
         }
 
         if (cruiser==true){//if cruiser is alive, then add up probability
-            for (int row = 0; row < grid.length; row++){
-                for (int col = 0; col < grid.length - 2; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true){
+            for (int row = 0; row < grid.length; row++){//row is a block variable
+                for (int col = 0; col < grid.length - 2; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true){//if there are three adjacent empty squares in the horizontal direction
+                        //increment all coordinates
                         grid[row][col] += 1;
                         grid[row][col+1] += 1;
                         grid[row][col+2] += 1;
                     }
                 }
             }
-
-
-
-            for (int row = 0; row < grid.length - 2; row++){
-                for ( int col = 0; col < grid.length; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true){
+            for (int row = 0; row < grid.length - 2; row++){//row is a block variable
+                for ( int col = 0; col < grid.length; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true){//does the same but in vertical direction
+                        //increment all coordinates
                         grid[row][col] += 1;
                         grid[row+1][col] += 1;
                         grid[row+2][col] += 1;
@@ -378,10 +380,10 @@ public class ExpertAI extends Captain{
         }
 
         if (battleship==true){//if battleship is alive, then add up probability
-            for (int row = 0; row < grid.length; row++){
-                for (int col = 0; col < grid.length - 3; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true && emptySquare(row,col+3, guesses) == true)
-                    {
+            for (int row = 0; row < grid.length; row++){//row is a block variable
+                for (int col = 0; col < grid.length - 3; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true && emptySquare(row,col+3, guesses) == true){//if there are four adjacent empty squares in the horizontal direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row][col+1] += 1;
                         grid[row][col+2] += 1;
@@ -389,12 +391,10 @@ public class ExpertAI extends Captain{
                     }
                 }
             }
-
-
-
-            for (int row = 0; row < grid.length - 3; row++){
-                for ( int col = 0; col < grid.length; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true && emptySquare(row+3,col, guesses) == true){
+            for (int row = 0; row < grid.length - 3; row++){//row is a block variable
+                for ( int col = 0; col < grid.length; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true && emptySquare(row+3,col, guesses) == true){//does the same but in vertical direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row+1][col] += 1;
                         grid[row+2][col] += 1;
@@ -405,9 +405,10 @@ public class ExpertAI extends Captain{
         }
 
         if (carrier==true){//if carrier is alive, then add up probability
-            for (int row = 0; row < grid.length; row++){
-                for (int col = 0; col < grid.length - 4; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true && emptySquare(row,col+3, guesses) == true && emptySquare(row,col+4, guesses) == true){
+            for (int row = 0; row < grid.length; row++){//row is a block variable
+                for (int col = 0; col < grid.length - 4; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row,col+1, guesses) == true && emptySquare(row,col+2, guesses) == true && emptySquare(row,col+3, guesses) == true && emptySquare(row,col+4, guesses) == true){//if there are five adjacent empty squares in the horizontal direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row][col+1] += 1;
                         grid[row][col+2] += 1;
@@ -416,12 +417,10 @@ public class ExpertAI extends Captain{
                     }
                 }
             }
-
-
-
-            for (int row = 0; row < grid.length - 4; row++){
-                for ( int col = 0; col < grid.length; col++){
-                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true && emptySquare(row+3,col, guesses) == true && emptySquare(row+4,col, guesses) == true){
+            for (int row = 0; row < grid.length - 4; row++){//row is a block variable
+                for ( int col = 0; col < grid.length; col++){//col is a block variable
+                    if(emptySquare(row,col,guesses) == true && emptySquare(row+1,col, guesses) == true && emptySquare(row+2,col, guesses) == true && emptySquare(row+3,col, guesses) == true && emptySquare(row+4,col, guesses) == true){//does the same but in vertical direction
+                       //increment all coordinates
                         grid[row][col] += 1;
                         grid[row+1][col] += 1;
                         grid[row+2][col] += 1;
@@ -442,7 +441,7 @@ public class ExpertAI extends Captain{
      * @return whether the coordinate entered is unknown
      */
     public static boolean emptySquare(int row, int col, int [][]grid) {
-        if(grid[row][col]==0) {
+        if(grid[row][col]==0) {//if true, coordinate on the grid is empty
             return true;
         }
         else {
@@ -458,27 +457,34 @@ public class ExpertAI extends Captain{
 	 * @return whether there is a hit adjacent to each other
 	 */
 	public static boolean checkAdjacentHit(int[]coordOfHit, Grid enemyGrid) {
+        //declaring and initializing 2D array to enemy's grid
         int[][]guesses = enemyGrid.getEntireGridStatus();
 		boolean adjacent=false;
-		if(coordOfHit[0]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {
+		if(coordOfHit[0]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]-1][coordOfHit[1]]==2) {//if true, there is an adjacent hit above original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[1]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2) {
+		else if(coordOfHit[1]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]+1]==2) {//if true, there is an adjacent hit to the right of original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[0]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2) {
+		else if(coordOfHit[0]+1 < 10 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]+1][coordOfHit[1]]==2) {//if true, there is an adjacent hit below original hit
 			adjacent=true;
 		}
-		else if(coordOfHit[1]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2) {
+		else if(coordOfHit[1]-1 >= 0 && guesses[coordOfHit[0]][coordOfHit[1]]==2 && guesses[coordOfHit[0]][coordOfHit[1]-1]==2) {//if true, there is an adjacent hit to the left of original hit
 			adjacent=true;
 		}
 		return adjacent;
 	}
 
+    /**returns the grid
+     * 
+     */
     public Grid getGrid(){
         return myGrid;
     }
 
+    /**returns whether it is AI or not
+     * 
+     */
     public boolean isAI(){
         return true;
     }
