@@ -1,4 +1,4 @@
-/**Name: J. Lai and D. Liu
+/**Names: J. Lai and D. Liu
  * File: ExpertAI.java
  * Purpose: Create the Expert AI class that includes advanced battleship strategies.
  * Date: June 10, 2024
