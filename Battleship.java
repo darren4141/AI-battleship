@@ -1,3 +1,9 @@
+/**Names: J. Lai and D. Liu
+ * File: Battleship.java
+ * Purpose: Create a battleship game in GUI using all other classes
+ * Date: June 10, 2024
+ */
+
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -20,15 +26,14 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.LinkedList;
 
-
 public class Battleship extends JFrame implements ActionListener{
-    static Captain[] player = new Captain[2];
-    static final int SCREENWIDTH = 1000;
+    static Captain[] player = new Captain[2]; //declare two new players
+    static final int SCREENWIDTH = 1000; //screen dimensions
     static final int SCREENHEIGHT = 650;
-    static final int ROWS = 10;
+    static final int ROWS = 10; //declare number of rows and columns
     static final int COLS = 10;
-    static JPanel[] playerGridPanel = new JPanel[2];
-    static JPanel container = new JPanel();
+    static JPanel[] playerGridPanel = new JPanel[2]; //create an array of two grids
+    static JPanel container = new JPanel(); //these panels are static as they are referred to outside of the constructor
     static JPanel intro = new JPanel();
     static JPanel horizontalFrame23 = new JPanel();
     static Container contentPane; //main container
@@ -298,8 +303,6 @@ public class Battleship extends JFrame implements ActionListener{
 
     public static void main(String[]args) throws IOException{
         Battleship myBattleship = new Battleship();
-        player[1].placeShips();
-        player[1].getGrid().printGridState();
 
         // while(!gameIsOver){
         //     System.out.println(player[0].getName() + "'s GRID");
@@ -358,6 +361,8 @@ public class Battleship extends JFrame implements ActionListener{
             JOptionPane.showMessageDialog(this, "A random toss has decided that " + firstUp + " is first up!");
 
             System.out.println("Enter pressed");
+            player[1].placeShips();
+            player[1].getGrid().printGridState();
             contentPane.add(container);
             container.setVisible(true);
             container.getRootPane().setDefaultButton(fire);

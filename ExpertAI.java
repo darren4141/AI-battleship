@@ -42,9 +42,9 @@ public class ExpertAI extends Captain{
                 {-1, 0}
             };
 
-        ships[0].setHeadX(6);
-        ships[0].setHeadY(5);
-        int direction = 3;
+        ships[0].setHeadX(2);
+        ships[0].setHeadY(8);
+        int direction = 1;
 
         for(int i = 0; i < ships[0].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][0] * i + " " +  (s.getHeadY() + directionMap[direction][1] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][0] * i, s.getHeadY() + directionMap[direction][1] * i));
@@ -56,8 +56,8 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[1].setHeadX(1);
-        ships[1].setHeadY(2);
+        ships[1].setHeadX(9);
+        ships[1].setHeadY(6);
         direction = 0;
         
         for(int i = 0; i < ships[1].getLength(); i++){
@@ -70,8 +70,8 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[2].setHeadX(3);
-        ships[2].setHeadY(7);
+        ships[2].setHeadX(0);
+        ships[2].setHeadY(6);
         direction = 0;
         
         for(int i = 0; i < ships[2].getLength(); i++){
@@ -84,8 +84,8 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[3].setHeadX(9);
-        ships[3].setHeadY(5);
+        ships[3].setHeadX(8);
+        ships[3].setHeadY(0);
         direction = 0;
         
         for(int i = 0; i < ships[3].getLength(); i++){
@@ -98,9 +98,9 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[4].setHeadX(5);
+        ships[4].setHeadX(9);
         ships[4].setHeadY(0);
-        direction = 1;
+        direction = 0;
         
         for(int i = 0; i < ships[4].getLength(); i++){//i is a block variable
             // System.out.println(s.getHeadX() + directionMap[direction][4] * i + " " +  (s.getHeadY() + directionMap[direction][4] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][4] * i, s.getHeadY() + directionMap[direction][4] * i));
@@ -256,18 +256,41 @@ public class ExpertAI extends Captain{
                     }
                 }
 
+
                 if(adjacentCoordinates[0] + shipDirection[0] < 0 || adjacentCoordinates[0] + shipDirection[0] > 9 || adjacentCoordinates[1] + shipDirection[1] < 0 || adjacentCoordinates[1] + shipDirection[1] > 9 || enemyGrid.getGridStatus(adjacentCoordinates[0] + shipDirection[0], adjacentCoordinates[1] + shipDirection[1]) != 0){
                     int count = 1;
-                    while(enemyGrid.getGridStatus(adjacentCoordinates[0] - shipDirection[0] * count, adjacentCoordinates[1] - shipDirection[1] * count) != 0){
+                    boolean keepGoing = true;
+                    while(enemyGrid.getGridStatus(adjacentCoordinates[0] - shipDirection[0] * count, adjacentCoordinates[1] - shipDirection[1] * count) == 2){// != 0
                         count++;
+                        keepGoing = true;
+                        if(enemyGrid.getGridStatus(adjacentCoordinates[0] - shipDirection[0] * count, adjacentCoordinates[1] - shipDirection[1] * count) == 1){
+                            keepGoing = false;
+                        }
                     }
-                    targetCoordinates[0] = adjacentCoordinates[0] - shipDirection[0] * count;
-                    targetCoordinates[1] = adjacentCoordinates[1] - shipDirection[1] * count;
+
+                    if(keepGoing){
+                        targetCoordinates[0] = adjacentCoordinates[0] - (shipDirection[0] * count);
+                        targetCoordinates[1] = adjacentCoordinates[1] - (shipDirection[1] * count);
+                    }else{
+                        if(adjacentCoordinates[0] - shipDirection[0] < 0 || adjacentCoordinates[0] - shipDirection[0] > 9 || adjacentCoordinates[1] - shipDirection[1] < 0 || adjacentCoordinates[1] - shipDirection[1] > 9 || enemyGrid.getGridStatus(adjacentCoordinates[0] - shipDirection[0], adjacentCoordinates[1] - shipDirection[1]) != 0){
+                            int c = 1;
+                            while(enemyGrid.getGridStatus(adjacentCoordinates[0] + shipDirection[0] * c, adjacentCoordinates[1] + shipDirection[1] * c) == 2){// != 0
+                                c++;
+                            }
+                            targetCoordinates[0] = adjacentCoordinates[0] + (shipDirection[0] * c);
+                            targetCoordinates[1] = adjacentCoordinates[1] + (shipDirection[1] * c);
+                        }else{
+                            targetCoordinates[0] = adjacentCoordinates[0] - shipDirection[0];
+                            targetCoordinates[1] = adjacentCoordinates[1] - shipDirection[1];
+                        }
+                    }
+
+
 
                 }else{
                     targetCoordinates[0] = adjacentCoordinates[0] + shipDirection[0];
                     targetCoordinates[1] = adjacentCoordinates[1] + shipDirection[1];
-                }        
+                }
 
             }else{
                 int[][] heatMap = createHeatMap(enemyGrid);
