@@ -47,8 +47,8 @@ public class SimpleAI extends Captain{
                 {-1, 0}
             };
 
-        ships[0].setHeadX(2);
-        ships[0].setHeadY(8);
+        ships[0].setHeadX(6);
+        ships[0].setHeadY(1);
         int direction = 1;
 
         for(int i = 0; i < ships[0].getLength(); i++){
@@ -61,7 +61,7 @@ public class SimpleAI extends Captain{
             }
         }
 
-        ships[1].setHeadX(9);
+        ships[1].setHeadX(0);
         ships[1].setHeadY(6);
         direction = 0;
         
@@ -75,9 +75,9 @@ public class SimpleAI extends Captain{
             }
         }
 
-        ships[2].setHeadX(0);
-        ships[2].setHeadY(6);
-        direction = 0;
+        ships[2].setHeadX(6);
+        ships[2].setHeadY(9);
+        direction = 1;
         
         for(int i = 0; i < ships[2].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][2] * i + " " +  (s.getHeadY() + directionMap[direction][2] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][2] * i, s.getHeadY() + directionMap[direction][2] * i));
@@ -89,7 +89,7 @@ public class SimpleAI extends Captain{
             }
         }
 
-        ships[3].setHeadX(8);
+        ships[3].setHeadX(0);
         ships[3].setHeadY(0);
         direction = 0;
         
@@ -103,7 +103,7 @@ public class SimpleAI extends Captain{
             }
         }
 
-        ships[4].setHeadX(9);
+        ships[4].setHeadX(1);
         ships[4].setHeadY(0);
         direction = 0;
         
