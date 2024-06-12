@@ -241,6 +241,7 @@ public class ExpertAI extends Captain{
             };
 
             if(checkAdjacentHit(unfinishedHit, enemyGrid)){
+                System.out.println("adjacent hits");
                 //declare arrays to be used in the code
                 int[] adjacentCoordinates = new int[2];
                 int[] shipDirection = new int[2];
@@ -294,22 +295,27 @@ public class ExpertAI extends Captain{
 
             }else{
                 int[][] heatMap = createHeatMap(enemyGrid);
+                Ship[] s = enemyGrid.getShips();
 
-                int maxX = -1;
-                int maxY = -1;
-                int maxHeat = 0;
-                for(int i = 0; i < 4; i++){
-                    if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
+                int length = s[Character.getNumericValue(enemyGrid.getGridState(unfinishedHit[0], unfinishedHit[1]).charAt(0))-23].getLength();
 
-                    }else if(heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]] > maxHeat){
-                        maxHeat = heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]];
-                        maxX = unfinishedHit[0] + direction[i][0];
-                        maxY = unfinishedHit[1] + direction[i][1];
-                    }
-                }
+                System.out.println(length);
 
-                targetCoordinates[0] = maxX;
-                targetCoordinates[1] = maxY;
+                // int maxX = -1;
+                // int maxY = -1;
+                // int maxHeat = 0;
+                // for(int i = 0; i < 4; i++){
+                //     if(unfinishedHit[0] + direction[i][0] < 0 || unfinishedHit[0] + direction[i][0] > 9 || unfinishedHit[1] + direction[i][1] < 0 || unfinishedHit[1] + direction[i][1] > 9){
+
+                //     }else if(heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]] > maxHeat){
+                //         maxHeat = heatMap[unfinishedHit[0] + direction[i][0]][unfinishedHit[1] + direction[i][1]];
+                //         maxX = unfinishedHit[0] + direction[i][0];
+                //         maxY = unfinishedHit[1] + direction[i][1];
+                //     }
+                // }
+
+                // targetCoordinates[0] = maxX;
+                // targetCoordinates[1] = maxY;
             }
         }
 
