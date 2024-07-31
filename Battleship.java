@@ -709,7 +709,7 @@ public class Battleship extends JFrame implements ActionListener{
      * @return: none
      */
     public static void refreshGrids(){
-        //empty the panels
+        //empty both panels
         playerGridPanel[0].removeAll();
         playerGridPanel[1].removeAll();
 
