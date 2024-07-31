@@ -23,8 +23,12 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class Battleship extends JFrame implements ActionListener{
     static Captain[] player = new Captain[2]; //declare two new players
@@ -38,7 +42,7 @@ public class Battleship extends JFrame implements ActionListener{
     static JPanel horizontalFrame23 = new JPanel();
     static Container contentPane; //main container
 
-    static JLabel namePlayer1 = new JLabel("'s GRID:");
+    static JLabel namePlayer1 = new JLabel("'s GRID:"); //these labels are static because their content changes as the game progresses
     static JLabel shipsRemainingPlayer1 = new JLabel("Ships Remaining:");
     static JLabel shotsPlayer1 = new JLabel("Shots Taken: ");
     static JLabel missesPlayer1 = new JLabel("Misses: ");
@@ -49,23 +53,28 @@ public class Battleship extends JFrame implements ActionListener{
     static JLabel missesPlayer2 = new JLabel("Misses: ");
     static JLabel hitsPlayer2 = new JLabel("Hits: ");
     
-    static JTextField mainPromptField = new JTextField(4);
+    static JTextField mainPromptField = new JTextField(4); //the textfield where the user will make their main guesses
     static JTextField nameField = new JTextField(10);
-    static JButton fire = new JButton("FIRE!");
+    static JButton fire = new JButton("FIRE!"); 
+    static JButton save = new JButton("Save");
 
     static int turn = 1;
-    static LinkedList<String> systemMessages = new LinkedList<>();
+    static LinkedList<String> systemMessages = new LinkedList<>(); //linkedList of status messages
 
-    static String seaBlue = "#94b1c9";
+    static String seaBlue = "#94b1c9"; //main colours
     static String darkSeaBlue = "#6f98b7";
     static String backgroundColor = "#4780a5";
     static String gridBorderColor = "#006994";
     static String darkerGridBorderColor = "#10577a";
 
-    public Battleship(){
-        playerGridPanel[0] = new JPanel();
+    static PrintWriter output; //declaring stuff for filehandling
+    static File file;
+    static Scanner fileScanner;
+
+    public Battleship(){ //constructor method
+        playerGridPanel[0] = new JPanel();//declare two new grids, one for each player
         playerGridPanel[1] = new JPanel();
-        player[0] = new Player("Jo");
+        player[0] = new Player("Jo");//declare two new player objects, one of them is a player and the other is AI
         player[1] = new SimpleAI("B");
 
         player[1].setName("Bot");
@@ -80,7 +89,7 @@ public class Battleship extends JFrame implements ActionListener{
         intro4Layout.setAlignment(FlowLayout.LEFT);
         String [] contents = {"Hey Captain! Let's play:", "Look! Let's play:", "Hey! It's time to play:", "I'm bored! Let's play:", "Hey you! Let's play: "};
         int randomPrompt = (int)(Math.random() * contents.length);
-        JLabel title = new JLabel(contents[randomPrompt]);
+        JLabel title = new JLabel(contents[randomPrompt]); //print a random quote from an array of options
         title.setFont(new Font("Sans-Serif", Font.BOLD ,32));
         intro4.add(title);
         intro4.setBackground(Color.decode(backgroundColor));
@@ -212,6 +221,8 @@ public class Battleship extends JFrame implements ActionListener{
         horizontalFrame22.setMaximumSize(new Dimension(450, 50));
         fire.addActionListener(this);
         horizontalFrame22.add(fire);
+        save.addActionListener(this);
+        horizontalFrame22.add(save);
         horizontalFrame22.setBackground(Color.decode(backgroundColor));
 
         JPanel horizontalFrame23Container = new JPanel();
@@ -269,6 +280,7 @@ public class Battleship extends JFrame implements ActionListener{
 
         contentPane = getContentPane();
 
+        //add all the frames
         verticalFrame1.add(horizontalFrame11);
         verticalFrame1.add(horizontalFrame12);
         horizontalFrame12.add(playerGridPanel[1]);
@@ -302,28 +314,7 @@ public class Battleship extends JFrame implements ActionListener{
     }
 
     public static void main(String[]args) throws IOException{
-        Battleship myBattleship = new Battleship();
-
-        // while(!gameIsOver){
-        //     System.out.println(player[0].getName() + "'s GRID");
-        //     player[0].getGrid().printGridStatus();
-        //     System.out.println(player[1].getName() + "'s GRID");
-        //     player[1].getGrid().printGridStatus();
-
-        //     refreshGrids();
-        //     updateLabels();
-        //     System.out.println("Grids refreshed");
-
-        //     int[] hit1 = player[0].target();
-        //     player[1].getGrid().attack(hit1[0], hit1[1]);
-
-        //     int[] hit2 = player[1].target();
-        //     player[0].getGrid().attack(hit2[0], hit2[1]);
-
-        //     if(player[0].getGrid().getShipsRemaining() == 0 || player[1].getGrid().getShipsRemaining() == 0){
-        //         gameIsOver = true;
-        //     }
-        // }
+        Battleship myBattleship = new Battleship(); //call the constructor
 
         refreshGrids();
         updateLabels();
@@ -331,8 +322,56 @@ public class Battleship extends JFrame implements ActionListener{
     }
 
 
-    public void actionPerformed(ActionEvent event){
+    public void actionPerformed(ActionEvent event){ //when an action is performed (button is pressed)
         String command = event.getActionCommand();
+        if(command.equals("Save")){
+            try {
+                output = new PrintWriter("savedGame.txt"); //declare a new printWriter, which will clear the file
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            file = new File("savedGame.txt"); //this will clear the file
+            try {
+                fileScanner = new Scanner(file); //declare a new file
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            //save all necessary info to the file
+            output.println(player[0].getName());
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    output.print(player[0].getGrid().getGridState(i, j) + " ");
+                }
+                output.println();
+            }
+
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    output.print(player[0].getGrid().getGridStatus(i, j) + " ");
+                }
+                output.println();
+            }
+            
+            // output.println(player[1].getName());
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    output.print(player[1].getGrid().getGridState(i, j) + " ");
+                }
+                output.println();
+            }
+
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    output.print(player[1].getGrid().getGridStatus(i, j) + " ");
+                }
+                output.println();
+            }
+
+            output.close();
+        }
 
         if(command.equals("New Game")){
             System.out.println("New game pressed");
@@ -344,11 +383,11 @@ public class Battleship extends JFrame implements ActionListener{
             String[] options = {"Simple", "Expert"};
             int difficultyChoice = JOptionPane.showOptionDialog(null, "What difficulty AI would you like to play against", "Difficulty", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
 
-            while(difficultyChoice == -1){
+            while(difficultyChoice == -1){ //if they close the window, make it pop up again
                 difficultyChoice = JOptionPane.showOptionDialog(null, "What difficulty AI would you like to play against", "Difficulty", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
             }
 
-            if(difficultyChoice == 0){
+            if(difficultyChoice == 0){//change the type of the class depending on the choice
                 player[1] = new SimpleAI("Simple Bot");
             }else if(difficultyChoice == 1){
                 player[1] = new ExpertAI("Hard Bot");
@@ -356,6 +395,7 @@ public class Battleship extends JFrame implements ActionListener{
 
             player[0].setName(s);
 
+            //random coin toss
             turn = (int)(Math.random() * 2);
             String firstUp = player[turn].getName();
             JOptionPane.showMessageDialog(this, "A random toss has decided that " + firstUp + " is first up!");
@@ -367,10 +407,11 @@ public class Battleship extends JFrame implements ActionListener{
             container.setVisible(true);
             container.getRootPane().setDefaultButton(fire);
             intro.setVisible(false);
+            refreshGrids();
             updateLabels();
         }
 
-        if(command.equals("Instructions")){
+        if(command.equals("Instructions")){//if the instructions button is pressed
             JOptionPane.showMessageDialog(this, 
             "Welcome Captain, to ShipBattles, an online naval-warfare game. Here is some information:" + 
             "\n1. Enter coordinates to strike" +
@@ -381,10 +422,72 @@ public class Battleship extends JFrame implements ActionListener{
             "\n5. HAVE FUN"); 
         }
 
-        if(command.equals("FIRE!")){
+        if(command.equals("Load Game")){//if the load game is pressed
+            file = new File("savedGame.txt");
+            try {
+                fileScanner = new Scanner(file);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            //read from the file
+            player[0].setName(fileScanner.nextLine());
+            System.out.println(player[0].getName());
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    player[0].getGrid().setGridState(i, j, fileScanner.next());
+                    System.out.print(player[0].getGrid().getGridState(i, j) + " ");
+                }
+                System.out.println();
+            }
+
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    player[0].getGrid().setGridStatus(i, j, Integer.parseInt(fileScanner.next()));
+                    System.out.print(player[0].getGrid().getGridStatus(i, j) + " ");
+                }
+                System.out.println();
+            }
+
+            player[1].setName("Hard Bot");
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    player[1].getGrid().setGridState(i, j, fileScanner.next());
+                    System.out.print(player[1].getGrid().getGridState(i, j) + " ");
+                }
+                System.out.println();
+            }
+
+            for(int i = 0; i < 10; i++){
+                for(int j = 0; j < 10; j++){
+                    try{
+                        player[1].getGrid().setGridStatus(i, j, Integer.parseInt(fileScanner.next()));
+                        System.out.print(player[1].getGrid().getGridStatus(i, j) + " ");
+                    }catch(Exception e){
+                        j--;
+                    }
+                }
+                System.out.println();
+            }
+
+            //show the game contents
+            player[1].getGrid().printGridState();
+            contentPane.add(container);
+            container.setVisible(true);
+            container.getRootPane().setDefaultButton(fire);
+            intro.setVisible(false);
+            updateLabels();
+            refreshGrids();
+            repaint();
+        }
+
+        if(command.equals("FIRE!")){ //if someone selects fire button
             boolean validInput = true;
 
             String[] coordinates;
+
+            //errorchecking for uppercase/lowercase, letter/number
             if(mainPromptField.getText().contains(" ")){
                 coordinates = mainPromptField.getText().split(" ");
             }else if(mainPromptField.getText().length() == 2){
@@ -446,13 +549,14 @@ public class Battleship extends JFrame implements ActionListener{
                     }
 
                     if(player[i].isAI()){
-                        int[] hit = player[i].target(player[j].getGrid());
+                        int[] hit = player[i].target(player[j].getGrid()); //the target method returns the optimal coordinates to strike
 
                         player[j].getGrid().attack(hit[0], hit[1]);
                         player[j].getGrid().decrementMisses();
                         // player[j].getGrid().attack((int)(Math.random() * 2), (int)(Math.random() * 2));
 
 
+                        //if the AI attacks the player
                         String[] options = {"Hit", "Miss", "Sunk"};
                         int choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
 
@@ -460,7 +564,7 @@ public class Battleship extends JFrame implements ActionListener{
                             choice = JOptionPane.showOptionDialog(null, player[i].getName() + " just attacked (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ") Was that a hit or a miss", "Hit or miss", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, 0);
                         }
 
-                        if(choice == 0){
+                        if(choice == 0){//if they hit
                             player[j].getGrid().setGridStatus(hit[0], hit[1], 2);
                             player[j].getGrid().incrementHits();
                             String[] shipNames = new String[5];
@@ -470,6 +574,7 @@ public class Battleship extends JFrame implements ActionListener{
                                 shipNames[n] = s[n].getName();
                             }
 
+                            //ask which ship they hit
                             int shipChoice = JOptionPane.showOptionDialog(null, "Which ship did " + player[i].getName() + " hit?", "Which ship was hit?", JOptionPane.YES_NO_OPTION, JOptionPane.INFORMATION_MESSAGE, null, shipNames, 0);
 
                             while(shipChoice == -1){
@@ -552,6 +657,8 @@ public class Battleship extends JFrame implements ActionListener{
                             systemMessages.add(player[i].getName() + " sunk " + player[j].getName() + "'s " + s[shipNumber].getName() + " at (" + Character.toString((char)(hit[0]+65)) + ", " + (hit[1] + 1) + ")");
                         }
                     }
+                    refreshGrids();
+                    repaint();
                 }
             }
 
@@ -566,6 +673,11 @@ public class Battleship extends JFrame implements ActionListener{
         }
     }
 
+    /*
+     * This method will refresh the contents of the labels above the grids
+     * @param: none
+     * @return: void
+     */
     public static void updateLabels(){
         namePlayer1.setText("ATTACKING " + player[1].getName() + "'s GRID");
         shipsRemainingPlayer1.setText("Ships Remaining: " +  player[1].getGrid().getShipsRemaining());
@@ -581,6 +693,7 @@ public class Battleship extends JFrame implements ActionListener{
 
         horizontalFrame23.removeAll();
 
+        //add a label for each log entry
         horizontalFrame23.add(new JLabel("History:"));
 
         for(int i = systemMessages.size() - 1; i >= 0; i--){
@@ -590,7 +703,13 @@ public class Battleship extends JFrame implements ActionListener{
 
     }
 
+    /*
+     * refreshGrids is a method that will refresh the grids visually
+     * @param: none
+     * @return: none
+     */
     public static void refreshGrids(){
+        //empty the panels
         playerGridPanel[0].removeAll();
         playerGridPanel[1].removeAll();
 
@@ -619,6 +738,7 @@ public class Battleship extends JFrame implements ActionListener{
                         }
                     }
                     JLabel character = new JLabel(content, SwingConstants.CENTER);
+                    //change the background colour based on the content of the grid
                     if(content.equals(" ")){
                         character.setBackground(Color.decode(seaBlue));
                     }else if(content.equals("X")){
@@ -639,7 +759,7 @@ public class Battleship extends JFrame implements ActionListener{
 
         }
 
-
+        //refresh everything
         playerGridPanel[0].revalidate();
         playerGridPanel[1].revalidate();
 

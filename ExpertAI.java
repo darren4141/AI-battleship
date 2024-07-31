@@ -1,3 +1,5 @@
+import java.util.concurrent.ExecutionException;
+
 /**Names: J. Lai and D. Liu
  * File: ExpertAI.java
  * Purpose: Create the Expert AI class that includes advanced battleship strategies.
@@ -42,9 +44,16 @@ public class ExpertAI extends Captain{
                 {-1, 0}
             };
 
-        ships[0].setHeadX(6);
-        ships[0].setHeadY(1);
-        int direction = 1;
+        int [][] shipPlacement = {
+            {6, 1, 1, 0, 6, 0, 6, 9, 1, 0, 0, 0, 1, 0, 0},
+            {2, 8, 1, 9, 6, 0, 0, 6, 0, 8, 0, 0, 9, 0, 0}
+        };
+
+        int randomShipPlacement = (int)(Math.random() * shipPlacement.length);
+
+        ships[0].setHeadX(shipPlacement[randomShipPlacement][0]);
+        ships[0].setHeadY(shipPlacement[randomShipPlacement][1]);
+        int direction = shipPlacement[randomShipPlacement][2];
 
         for(int i = 0; i < ships[0].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][0] * i + " " +  (s.getHeadY() + directionMap[direction][1] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][0] * i, s.getHeadY() + directionMap[direction][1] * i));
@@ -56,9 +65,9 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[1].setHeadX(0);
-        ships[1].setHeadY(6);
-        direction = 0;
+        ships[1].setHeadX(shipPlacement[randomShipPlacement][3]);
+        ships[1].setHeadY(shipPlacement[randomShipPlacement][4]);
+        direction = shipPlacement[randomShipPlacement][5];
         
         for(int i = 0; i < ships[1].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][1] * i + " " +  (s.getHeadY() + directionMap[direction][1] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][1] * i, s.getHeadY() + directionMap[direction][1] * i));
@@ -70,9 +79,9 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[2].setHeadX(6);
-        ships[2].setHeadY(9);
-        direction = 1;
+        ships[2].setHeadX(shipPlacement[randomShipPlacement][6]);
+        ships[2].setHeadY(shipPlacement[randomShipPlacement][7]);
+        direction = shipPlacement[randomShipPlacement][8];
         
         for(int i = 0; i < ships[2].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][2] * i + " " +  (s.getHeadY() + directionMap[direction][2] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][2] * i, s.getHeadY() + directionMap[direction][2] * i));
@@ -84,9 +93,9 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[3].setHeadX(0);
-        ships[3].setHeadY(0);
-        direction = 0;
+        ships[3].setHeadX(shipPlacement[randomShipPlacement][9]);
+        ships[3].setHeadY(shipPlacement[randomShipPlacement][10]);
+        direction = shipPlacement[randomShipPlacement][11];
         
         for(int i = 0; i < ships[3].getLength(); i++){
             // System.out.println(s.getHeadX() + directionMap[direction][3] * i + " " +  (s.getHeadY() + directionMap[direction][3] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][3] * i, s.getHeadY() + directionMap[direction][3] * i));
@@ -98,9 +107,9 @@ public class ExpertAI extends Captain{
             }
         }
 
-        ships[4].setHeadX(1);
-        ships[4].setHeadY(0);
-        direction = 0;
+        ships[4].setHeadX(shipPlacement[randomShipPlacement][12]);
+        ships[4].setHeadY(shipPlacement[randomShipPlacement][13]);
+        direction = shipPlacement[randomShipPlacement][14];
         
         for(int i = 0; i < ships[4].getLength(); i++){//i is a block variable
             // System.out.println(s.getHeadX() + directionMap[direction][4] * i + " " +  (s.getHeadY() + directionMap[direction][4] * i) + " " + s.getSignature() + " " + myGrid.getGridState(s.getHeadX() + directionMap[direction][4] * i, s.getHeadY() + directionMap[direction][4] * i));
@@ -294,12 +303,47 @@ public class ExpertAI extends Captain{
                 }
 
             }else{
-                int[][] heatMap = createHeatMap(enemyGrid);
                 Ship[] s = enemyGrid.getShips();
+                                
+                int shipType = Character.getNumericValue(enemyGrid.getGridState(unfinishedHit[0], unfinishedHit[1]).charAt(0))-23;
+                System.out.println(shipType);
 
-                int length = s[Character.getNumericValue(enemyGrid.getGridState(unfinishedHit[0], unfinishedHit[1]).charAt(0))-23].getLength();
+                for(int i = 0; i < 10; i++){
+                    for(int j = 0; j < 10; j++){
+                        System.out.print(enemyGrid.getGridStatus(i, j));
+                    }
+                    System.out.println();
+                }
 
-                System.out.println(length);
+                int[][] tempGridStatus = enemyGrid.getEntireGridStatus();
+                tempGridStatus[unfinishedHit[0]][unfinishedHit[1]] = 0;
+
+                int[][] hitHeatmap = createHitHeatMap(unfinishedHit, shipType, tempGridStatus);
+
+                tempGridStatus[unfinishedHit[0]][unfinishedHit[1]] = 2;
+
+                int maxValue = 0;
+                int maxX = -1;
+                int maxY = -1;
+                for(int i = 0; i < 10; i++){
+                    for(int j = 0; j < 10; j++){
+                        if(i == unfinishedHit[0] && j == unfinishedHit[1]){
+                            continue;
+                        }
+                        System.out.print(hitHeatmap[i][j]);
+                        if(hitHeatmap[i][j] > maxValue){
+                            maxX = i;
+                            maxY = j;
+                            maxValue = hitHeatmap[i][j];
+                        }
+                    }
+                    System.out.println();
+                }
+
+                System.out.println(maxX + " " + maxY);
+
+                targetCoordinates[0] = maxX;
+                targetCoordinates[1] = maxY;
 
                 // int maxX = -1;
                 // int maxY = -1;
@@ -462,283 +506,283 @@ public class ExpertAI extends Captain{
         return grid;
     }
 
-    /**Create a new heat map of the possibilities around a hit ship
+/**Create a new heat map of the possibilities around a hit ship
  * 
  * @param coordOfHit coordinate of hit
  * @param shipType type of ship
  * @param enemyGrid the grid that the method will create a heat map of
  * @return a 2D array of the probabilities
  */
-public static int[][]createHitHeatMap(int [] coordOfHit, int shipType, int[][] enemyGrid){
+    public static int[][]createHitHeatMap(int [] coordOfHit, int shipType, int[][] enemyGrid){
 
-    //declare and initialize variables to be used
-    boolean destroyer = shipType==0;
-    boolean submarine = shipType==1;
-    boolean cruiser = shipType==2;
-    boolean battleship = shipType==3;
-    boolean carrier = shipType==4;
-    int [][] grid = new int[10][10];
-    
-    //set all coordinates in the grid to 0
-    for (int row = 0; row < grid.length; row++){//row is a block variable
-        for (int col = 0; col < grid[row].length; col++){//col is a block variable
-            grid[row][col]=0;
+        //declare and initialize variables to be used
+        boolean destroyer = shipType==0;
+        boolean submarine = shipType==1;
+        boolean cruiser = shipType==2;
+        boolean battleship = shipType==3;
+        boolean carrier = shipType==4;
+        int [][] grid = new int[10][10];
+        
+        //set all coordinates in the grid to 0
+        for (int row = 0; row < grid.length; row++){//row is a block variable
+            for (int col = 0; col < grid[row].length; col++){//col is a block variable
+                grid[row][col]=0;
+            }
         }
+    
+        //create heat map depending on boat
+        if (destroyer==true){//if destroyer is hit, then add up probability for the squares around it
+                    if(coordOfHit[1]+1 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                    }
+                    if(coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                    }
+            //add probability vertically
+                    if(coordOfHit[0]+1 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                    }
+        }
+    
+        if (submarine==true){//if submarine is hit, then add up probability for the squares around it
+                    if(coordOfHit[1]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                    }
+                    if(coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                    }
+                    if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                    }
+            //add probability vertically
+                    if(coordOfHit[0]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                    }
+        }
+        if (cruiser==true){//if cruiser is hit, then add up probability for the squares around it
+                    if(coordOfHit[1]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                    }
+                    if(coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                    }
+                    if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                    }
+            //add probability vertically
+                    if(coordOfHit[0]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                    }
+        }
+        if (battleship==true){//if battleship is hit, then add up probability for the squares around it
+                    if(coordOfHit[1]+3 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
+                    }
+                    if(coordOfHit[1]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
+                    }
+                    if(coordOfHit[1]+2 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                    }
+                    if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                    }
+                    
+            //add probability vertically
+                    if(coordOfHit[0]+3 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+2 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                    }
+        }
+        if (carrier==true){//if carrier is hit, then add up probability for the squares around it
+                    if(coordOfHit[1]+4 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+4, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+4] += 1;
+                    }
+                    if(coordOfHit[1]-4 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-4, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-4] += 1;
+                    }
+                    if(coordOfHit[1]+2 <= 10 && coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                    }
+                    if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                    }
+                    
+                    if(coordOfHit[1]+3 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
+                        //increment both coordinates (Horizontal)
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
+                        grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
+                    }
+                    
+                    
+            //add probability vertically
+                    if(coordOfHit[0]+4 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+4,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+4][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]-4 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-4,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-4][coordOfHit[1]] += 1;
+                    }
+                    
+                    
+                    if(coordOfHit[0]+2 <= 10 && coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+3 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                    }
+                    if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
+                        //increment both coordinates
+                        grid[coordOfHit[0]][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
+                        grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
+                    }
+        }
+        return grid;
     }
-
-    //create heat map depending on boat
-    if (destroyer==true){//if destroyer is hit, then add up probability for the squares around it
-                if(coordOfHit[1]+1 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                }
-                if(coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                }
-        //add probability vertically
-                if(coordOfHit[0]+1 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                }
-    }
-
-    if (submarine==true){//if submarine is hit, then add up probability for the squares around it
-                if(coordOfHit[1]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                }
-                if(coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                }
-                if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                }
-        //add probability vertically
-                if(coordOfHit[0]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                }
-    }
-    if (cruiser==true){//if cruiser is hit, then add up probability for the squares around it
-                if(coordOfHit[1]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                }
-                if(coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                }
-                if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                }
-        //add probability vertically
-                if(coordOfHit[0]+2 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                }
-    }
-    if (battleship==true){//if battleship is hit, then add up probability for the squares around it
-                if(coordOfHit[1]+3 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
-                }
-                if(coordOfHit[1]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
-                }
-                if(coordOfHit[1]+2 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                }
-                if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                }
-                
-        //add probability vertically
-                if(coordOfHit[0]+3 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+2 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                }
-    }
-    if (carrier==true){//if carrier is hit, then add up probability for the squares around it
-                if(coordOfHit[1]+4 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+4, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+4] += 1;
-                }
-                if(coordOfHit[1]-4 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-4, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-4] += 1;
-                }
-                if(coordOfHit[1]+2 <= 10 && coordOfHit[1]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                }
-                if(coordOfHit[1]+1 <= 10 && coordOfHit[1]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-3] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                }
-                
-                if(coordOfHit[1]+3 <= 10 && coordOfHit[1]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+1, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+2, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]+3, enemyGrid) == true && emptySquare(coordOfHit[0],coordOfHit[1]-1, enemyGrid) == true){//if there are two adjacent empty squares in the horizontal direction
-                    //increment both coordinates (Horizontal)
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+1] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+2] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]+3] += 1;
-                    grid[coordOfHit[0]][coordOfHit[1]-1] += 1;
-                }
-                
-                
-        //add probability vertically
-                if(coordOfHit[0]+4 <= 10 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+4,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+4][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]-4 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-4,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-4][coordOfHit[1]] += 1;
-                }
-                
-                
-                if(coordOfHit[0]+2 <= 10 && coordOfHit[0]-2 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+3 <= 10 && coordOfHit[0]-1 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+3][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                }
-                if(coordOfHit[0]+1 <= 10 && coordOfHit[0]-3 >= 0 && emptySquare(coordOfHit[0],coordOfHit[1],enemyGrid) == true && emptySquare(coordOfHit[0]-1,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-2,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]-3,coordOfHit[1], enemyGrid) == true && emptySquare(coordOfHit[0]+1,coordOfHit[1], enemyGrid) == true){//does the same but in vertical direction
-                    //increment both coordinates
-                    grid[coordOfHit[0]][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-1][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-2][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]-3][coordOfHit[1]] += 1;
-                    grid[coordOfHit[0]+1][coordOfHit[1]] += 1;
-                }
-    }
-    return grid;
-}
 
     /**Checks if the coordinates enterered is unknown
      * 
@@ -748,10 +792,15 @@ public static int[][]createHitHeatMap(int [] coordOfHit, int shipType, int[][] e
      * @return whether the coordinate entered is unknown
      */
     public static boolean emptySquare(int row, int col, int [][]grid) {
-        if(grid[row][col]==0) {//if true, coordinate on the grid is empty
-            return true;
-        }
-        else {
+        try{
+            if(grid[row][col]==0) {//if true, coordinate on the grid is empty
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }catch(Exception e){
             return false;
         }
     }    
